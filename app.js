@@ -122,6 +122,12 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 
+/*
+* Mutlipart file upload using multiparty and http. Just hit the endpoint on
+* 8080 and you'll get back the form offering a file upload. Will render a 
+* result when done.
+*/
+
 http.createServer(function(req, res) {
   if (req.url === '/upload' && req.method === 'POST') {
     // parse a file upload
