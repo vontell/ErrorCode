@@ -1,8 +1,14 @@
 /**
  * Module dependencies.
  */
+const exec = require('child_process').exec,
+    child;
+const Busboy = require('busboy');
+const inspect = require('util').inspect;
 const express = require('express');
 const multiparty = require('multiparty');
+const os = require('os');
+const fs = require('fs');
 const http = require('http');
 const util = require('util');
 const compression = require('compression');
@@ -100,7 +106,6 @@ app.use(function(req, res, next) {
     }
     next();
 });
-
 /**
  * Primary app routes.
  */
@@ -121,54 +126,48 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-
 /*
-* Mutlipart file upload using multiparty and http. Just hit the endpoint on
-* 8080 and you'll get back the form offering a file upload. Will render a 
-* result when done.
-*/
-
+ * Mutlipart file upload using multiparty and http. Just hit the endpoint on
+ * 8080 and you'll get back the form offering a file upload. Will render a
+ * result when done.
+ */
 http.createServer(function(req, res) {
-  if (req.url === '/upload' && req.method === 'POST') {
-    // parse a file upload
-    var form = new multiparty.Form();
+    if (req.method === 'POST') {
+        var busboy = new Busboy({
+            headers: req.headers
+        });
+        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+            var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
+            file.pipe(fs.createWriteStream(saveTo));
+        });
+        busboy.on('finish', function() {
+            res.writeHead(200, {
+                'Connection': 'close'
+            });
+            res.end("That's all folks!");
+        });
+        return req.pipe(busboy);
+    }
+    res.writeHead(404);
+    res.end();
+}).listen(8080, function() {
+    console.log('Listening for requests');
+});
 
-    form.parse(req, function(err, fields, files) {
-      res.writeHead(200, {'content-type': 'text/plain'});
-      res.write('received upload:\n\n');
-      res.end(util.inspect({fields: fields, files: files}));
+var onTestUpload = function() {
+    /*
+     * Child accesses the command line. Execute a python script
+     * located in the subfolder "python" and pass it the file of the code,
+     * and the test cases.
+     */
+    child = exec('python python/testGenerator.py {{recieved_file_one, recieved_file_two}}', function(error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
     });
-
-    return;
-  }
-
-  // show a file upload form
-  res.writeHead(200, {'content-type': 'text/html'});
-  res.end(
-    '<form action="/upload" enctype="multipart/form-data" method="post">'+
-    '<input type="text" name="title"><br>'+
-    '<input type="file" name="upload" multiple="multiple"><br>'+
-    '<input type="submit" value="Upload">'+
-    '</form>'
-  );
-}).listen(8080);
-
-// /**
-//  * API examples routes.
-//  */
-// app.get('/api', apiController.getApi);
-// app.get('/api/stripe', apiController.getStripe);
-// app.post('/api/stripe', apiController.postStripe);
-// app.get('/api/scraping', apiController.getScraping);
-// app.get('/api/clockwork', apiController.getClockwork);
-// app.post('/api/clockwork', apiController.postClockwork);
-// app.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
-// app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getGithub);
-// app.get('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getTwitter);
-// app.post('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postTwitter);
-// app.get('/api/lob', apiController.getLob);
-// app.get('/api/upload', apiController.getFileUpload);
-// app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
+};
 
 /**
  * OAuth authentication routes. (Sign in)
