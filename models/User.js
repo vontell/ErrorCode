@@ -51,6 +51,7 @@ userSchema.methods.comparePassword = function (candidatePassword, cb) {
   });
 };
 
+
 // /**
 //  * Helper method for getting user's gravatar.
 //  */
