@@ -2,6 +2,9 @@
  * Module dependencies.
  */
 const express = require('express');
+const multiparty = require('multiparty');
+const http = require('http');
+const util = require('util');
 const compression = require('compression');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -59,10 +62,6 @@ mongoose.connection.on('error', () => {
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('static'));
 app.use(compression());
-app.use(sass({
-    src: path.join(__dirname, 'public'),
-    dest: path.join(__dirname, 'public')
-}));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -122,22 +121,55 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-/**
- * API examples routes.
- */
-app.get('/api', apiController.getApi);
-app.get('/api/stripe', apiController.getStripe);
-app.post('/api/stripe', apiController.postStripe);
-app.get('/api/scraping', apiController.getScraping);
-app.get('/api/clockwork', apiController.getClockwork);
-app.post('/api/clockwork', apiController.postClockwork);
-app.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
-app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getGithub);
-app.get('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getTwitter);
-app.post('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postTwitter);
-app.get('/api/lob', apiController.getLob);
-app.get('/api/upload', apiController.getFileUpload);
-app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
+
+/*
+* Mutlipart file upload using multiparty and http. Just hit the endpoint on
+* 8080 and you'll get back the form offering a file upload. Will render a 
+* result when done.
+*/
+
+http.createServer(function(req, res) {
+  if (req.url === '/upload' && req.method === 'POST') {
+    // parse a file upload
+    var form = new multiparty.Form();
+
+    form.parse(req, function(err, fields, files) {
+      res.writeHead(200, {'content-type': 'text/plain'});
+      res.write('received upload:\n\n');
+      res.end(util.inspect({fields: fields, files: files}));
+    });
+
+    return;
+  }
+
+  // show a file upload form
+  res.writeHead(200, {'content-type': 'text/html'});
+  res.end(
+    '<form action="/upload" enctype="multipart/form-data" method="post">'+
+    '<input type="text" name="title"><br>'+
+    '<input type="file" name="upload" multiple="multiple"><br>'+
+    '<input type="submit" value="Upload">'+
+    '</form>'
+  );
+}).listen(8080);
+
+// /**
+//  * API examples routes.
+//  */
+// app.get('/api', apiController.getApi);
+// app.get('/api/stripe', apiController.getStripe);
+// app.post('/api/stripe', apiController.postStripe);
+// app.get('/api/scraping', apiController.getScraping);
+// app.get('/api/clockwork', apiController.getClockwork);
+// app.post('/api/clockwork', apiController.postClockwork);
+// app.get('/api/facebook', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getFacebook);
+// app.get('/api/github', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getGithub);
+// app.get('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.getTwitter);
+// app.post('/api/twitter', passportConfig.isAuthenticated, passportConfig.isAuthorized, apiController.postTwitter);
+// app.get('/api/lob', apiController.getLob);
+// app.get('/api/upload', apiController.getFileUpload);
+// app.post('/api/upload', upload.single('myFile'), apiController.postFileUpload);
+
 /**
  * OAuth authentication routes. (Sign in)
  */
