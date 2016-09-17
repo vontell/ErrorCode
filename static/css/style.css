@@ -1218,8 +1218,57 @@ h1, h2, h3, h4, h5, h6, figure {
   background: rgba(0, 0, 0, 0.03) !important;
 }
 
+#main-content-section {
+    background: rgba(0, 0, 0, 0.7);
+    padding-top: 64px;
+}
+
 .js .animate-box {
   opacity: 0;
+}
+
+.codespec-cont {
+    color: white;
+}
+
+.testcase-cont {
+    
+}
+
+.codespec-title {
+    text-align: left;
+    color: white;
+}
+
+.testcase-title {
+    text-align: center;
+    color: white;
+}
+
+.no-code-title {
+    color: white;
+}
+
+.no-code-section {
+    text-align: center;
+    color: white;
+}
+
+.dark-button {
+    color: white !important;
+}
+
+.white {
+    color: white;
+}
+
+.img-container {
+    text-align: center;
+}
+
+.lang-image {
+    width: 100%;
+    padding: 64px;
 }
 
 /*# sourceMappingURL=style.css.map */
