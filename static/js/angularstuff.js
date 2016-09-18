@@ -4,9 +4,6 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     
     // EXAMPLE CODE
     
-    //var exampleString = undefined;
-    var exampleString = "\'\'\'\r\nThis is a function that takes as input a\r\nnumber x, and outputs that number squared.\r\n\'\'\'\r\ndef square(x):\r\n    return x * x\r\n\r\n\'\'\'\r\nThis function returns whether a given list\r\nis empty or not.\r\n\'\'\'\r\ndef isEmpty(list):\r\n    numItems = len(list)\r\n    return numItems == 0"
-    
     $scope.testCases = [];
     
     var testCase1 = {
@@ -49,7 +46,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     $scope.testCases = $scope.testCases.concat(testCase2);
     
     // END EXAMPLE CODE
-    $scope.code = exampleString;
+    $scope.code = undefined;
     $scope.author = "Ben Bitdittle"
     $scope.title = "Helper Functions File"
     
@@ -63,13 +60,11 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             
             console.log('Uploaded a blob or file!');
 
-            var r = new FileReader();
-            r.onload = function(e) { 
-                var contents = e.target.result;
-                // Do something with contents
-                $scope.setFiles(null);
-                $scope.files = null;
-            }
+            $http.get("/file/code/python.py").then(function(res){
+                $scope.code = res.data;
+            }, function(err) {
+                $scope.code = err;
+            });
             
         });
         
