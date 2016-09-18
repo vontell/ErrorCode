@@ -1,9 +1,8 @@
 /**
  * Module dependencies.
  */
-var gcloud = require('gcloud');
-const exec = require('child_process').exec,
-    child;
+
+const exec = require('child_process').exec.child;
 const request = require('request');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -15,7 +14,7 @@ const http = require('http');
 const util = require('util');
 const path = require('path');
 const chalk = require('chalk');
-
+var gcloud = require('gcloud');
 
 /**
  * Create Express server.
@@ -65,10 +64,13 @@ var testRun = function() {
     }, function(err, files) {
         //console.log(err, files)
         //console.log(err, files)
+        var fileName;
         files.forEach(function(file) {
-            //console.log(file.name),
+            console.log("File name: " + file.name),
+            fileName = (file.name).split("/");
+            console.log("Filename array: " + fileName);
             file.download({
-                destination: 'python/code/python.py'
+                destination: 'python/code/' + fileName[1]
             }, function(err) {});
         });
     });
@@ -76,11 +78,13 @@ var testRun = function() {
         prefix: 'tests/'
     }, function(err, files) {
         //console.log(err, files)
+        var fileName;
         files.forEach(function(file) {
             //console.log(file);
             // return;
+            fileName = (file.name).split("/");
             file.download({
-                destination: 'python/test/test.py'
+                destination: 'python/test/' + fileName[1]
             }, function(err) {
                 console.log(err);
             });

@@ -62,6 +62,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             $http.get("/run").then(function(){
                 $http.get("/file/code/" + $scope.files[0].name).then(function(res){
                 $scope.code = res.data;
+                reload_js('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert');
             }, function(err) {
                 $scope.code = err;
             });
@@ -84,6 +85,18 @@ project.controller('testController', function($rootScope, $scope, $http, $window
         $mdDialog.show({
             controller: 'addTestController',
             templateUrl: 'testDialog.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true,
+            fullscreen: false //useFullScreen
+        });
+        
+    };
+    
+     $scope.openSpecDialog = function() {
+        
+        $mdDialog.show({
+            controller: 'addTestController',
+            templateUrl: 'specDialog.html',
             parent: angular.element(document.body),
             clickOutsideToClose: true,
             fullscreen: false //useFullScreen
@@ -206,9 +219,15 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
         };
         
         $rootScope.addTestCase(newTest);
-        
+        reload_js('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert');
         $mdDialog.cancel();
         
     };
     
 });
+
+
+function reload_js(src) {
+    $('script[src="' + src + '"]').remove();
+    $('<script>').attr('src', src).appendTo('head');
+}
