@@ -4,7 +4,6 @@
 var gcloud = require('gcloud');
 const exec = require('child_process').exec,
     child;
-const fileUpload = require('express-fileupload');
 const request = require('request');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -14,19 +13,8 @@ const os = require('os');
 const fs = require('fs');
 const http = require('http');
 const util = require('util');
-const compression = require('compression');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const chalk = require('chalk');
-const errorHandler = require('errorhandler');
-const dotenv = require('dotenv');
-const flash = require('express-flash');
 const path = require('path');
 const passport = require('passport');
-const expressValidator = require('express-validator');
-const sass = require('node-sass-middleware');
-const multer = require('multer');
 const upload = multer({
     dest: path.join(__dirname, 'uploads')
 });
@@ -85,59 +73,6 @@ app.use(function(req, res, next) {
         req.session.returnTo = req.path;
     }
     next();
-});
-
-/*
-* Pricing array, base_url and post for the charge of a card to Square.
-* Hit the router's endpoint to process a payment.
-*/
-var product_cost = {"001": 1, "002": 2, "003": 5} 
-var base_url = "https://connect.squareup.com/v2";
-router.post('/charges/charge_card', function(req,res,next){
-  var location;
-  var request_params = req.body;
-  unirest.get(base_url + '/locations')
-  .headers({
-    'Authorization': 'Bearer ' + config.squareAccessToken,
-    'Accept': 'application/json'
-  })
-  .end(function (response) {
-    location = response.body.locations[0];
-    
-    var token = require('crypto').randomBytes(64).toString('hex');
-    
-    //Check if product exists
-    if (!product_cost.hasOwnProperty(request_params.product_id)) {
-      return res.json({status: 400, errors: [{"detail": "Product Unavailable"}] })
-    }
-
-    //Make sure amount is a valid integer
-    var amount = product_cost[request_params.product_id]
-    
-    request_body = {
-      card_nonce: request_params.nonce,
-      amount_money: {
-        amount: amount,
-        currency: 'USD'
-      },
-      idempotency_key: token
-    }
-    unirest.post(base_url + '/locations/' + location.id + "/transactions")
-    .headers({
-    'Authorization': 'Bearer ' + config.squareAccessToken,
-    'Accept': 'application/json',
-    'Content-Type': 'application/json'
-    })
-    .send(request_body)
-    .end(function(response){
-      if (response.body.errors){
-        res.json({status: 400, errors: response.body.errors})
-      }else{
-        res.json({status: 200})
-      }
-    })
-
-  });
 });
 
 
