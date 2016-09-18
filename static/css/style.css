@@ -1313,4 +1313,28 @@ h1, h2, h3, h4, h5, h6, figure {
     margin-right: 8px;
 }
 
+.test-code {
+    border-radius: 0px;
+}
+
+.star {
+    display: inline;
+    color: orange;
+    margin-right: 4px;
+    font-size: 18px;
+}
+
+.case-user {
+    padding-left: 8px;
+    padding-bottom: 8px;
+    font-style: italic;
+}
+
+.disqus-thread {
+    background: #fafafa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 32px;
+}
+
 /*# sourceMappingURL=style.css.map */
