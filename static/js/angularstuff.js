@@ -12,7 +12,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     var testCase1 = {
         name: "Simple Square",
         user: "vontell",
-        votes: 1,
+        votes: -1,
         starred: false,
         passed: true,
         content: "# This will test the square operation on 1\r\nresult = square(1)\r\nassertEquals(result, 1)"
@@ -25,6 +25,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
         passed: false,
         content: "# This will test a list with some elements\r\nresult = isEmpty([2,1,4])\r\nassertEquals(result, false)"
     }
+    
     
     $scope.setFiles = function(element) {
     $scope.$apply(function(scope) {
@@ -47,6 +48,14 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     
     $scope.testCases = $scope.testCases.concat(testCase1);
     $scope.testCases = $scope.testCases.concat(testCase2);
+    
+    //For succes/failure
+    if($scope.testCases[0].passed){
+        $scope.myColor = 'green';
+    }
+    else{
+         $scope.myColor = 'red';
+    }
     
     // END EXAMPLE CODE
     $scope.code = exampleString;

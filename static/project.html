@@ -156,12 +156,19 @@
                     <div ng-show="testCases.length > 0">
                         
                         <div class="panel panel-default testcase-submission" ng-repeat="case in testCases">
-                            <div class="panel-heading"><i ng-click="toggleStar($index)" class="icon-star" ng-class="{yellow: case.starred, gray: !case.starred}"></i>{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon" ng-click="incrementVote($index)"></i> <i class="icon-sad vote-icon" ng-click="decrementVote($index)"></i></div></div>
+                            <div class="panel-heading">
+                                <i ng-click="toggleStar($index)" class="icon-star" ng-class="{yellow: case.starred, gray: !case.starred}"></i>{{case.name}}
+                                <div class="pull-right">
+                                <p class="votes">{{case.votes}}</p>
+                                    <i class="icon-happy vote-icon" ng-click="incrementVote($index)"></i> 
+                                    <i class="icon-sad vote-icon"  ng-click="decrementVote($index)"></i>
+                                </div>
+                            </div>
                             <!--?prettify linenums=true?-->
                             <div class="panel-body">
                                 <pre class="prettyprint code test-code" ng-bind="case.content"></pre>
                             </div>
-                            <p class="case-user">{{case.user}}</p>
+                            <p class="case-user" ng-class="{red: !case.passed, green: case.passed}">{{case.user}} <span style="font-size: 10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Test Passed: {{case.passed}}</span></p>
                         </div>
                         
                     </div>

@@ -1298,7 +1298,10 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .case-user {
+    margin-top: -10px;
+    padding-top: 5px;
     text-align: left;
+    color: white;
 }
 
 .panel {
@@ -1401,6 +1404,14 @@ h1, h2, h3, h4, h5, h6, figure {
 .gray {
     color: grey;
     margin-right: 16px
+}
+
+.red {
+    background-color: red;
+}
+
+.green {
+    background-color: green;
 }
 
 .testing-stuff {
