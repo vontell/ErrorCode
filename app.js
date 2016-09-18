@@ -1,9 +1,8 @@
 /**
  * Module dependencies.
  */
-var gcloud = require('gcloud');
-const exec = require('child_process').exec,
-    child;
+
+const exec = require('child_process').exec.child;
 const request = require('request');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -15,7 +14,7 @@ const http = require('http');
 const util = require('util');
 const path = require('path');
 const chalk = require('chalk');
-
+var gcloud = require('gcloud');
 
 /**
  * Create Express server.

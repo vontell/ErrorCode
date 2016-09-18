@@ -1,0 +1,42 @@
+<md-dialog aria-label="Add Test Case" style="width: 700px; height= 400px;">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <h2 class="dialog-title">Recommended Test Cases</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+          <div class="col-sm-9" style="margin-left:-15px;">
+              <div class="panel-heading">
+                 Simple Square Test
+                  <div class="pull-right">
+                      
+                  </div>
+              </div>
+                <!--?prettify lang=python linenums=true?-->
+                <div class="panel-body">
+                    <pre class="prettyprint code test-code" style="color:white" ng-bind="'# This will test the square operation on 1\r\nresult = square(1)\r\nassertEquals(result, 1)'"></pre>
+                </div>
+          </div>
+          <div class="col-sm-3" style="margin-top:62px;">
+              <p ><a ng-click="submit()" class="btn btn-primary btn-outline with-arrow">Run Test<i class="icon-arrow-right"></i></a></p>
+          </div>
+        
+          
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <md-button ng-click="close()">
+       Cancel
+      </md-button>
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>

@@ -87,6 +87,18 @@ project.controller('testController', function($rootScope, $scope, $http, $window
         
     };
     
+     $scope.openSpecDialog = function() {
+        
+        $mdDialog.show({
+            controller: 'addTestController',
+            templateUrl: 'specDialog.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true,
+            fullscreen: false //useFullScreen
+        });
+        
+    };
+    
     /*
         Takes a test case with the following properties
             name
