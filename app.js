@@ -64,10 +64,13 @@ var testRun = function() {
     }, function(err, files) {
         //console.log(err, files)
         //console.log(err, files)
+        var fileName;
         files.forEach(function(file) {
-            //console.log(file.name),
+            console.log("File name: " + file.name),
+            fileName = (file.name).split("/");
+            console.log("Filename array: " + fileName);
             file.download({
-                destination: 'python/code/python.py'
+                destination: 'python/code/' + fileName[1]
             }, function(err) {});
         });
     });
@@ -75,11 +78,13 @@ var testRun = function() {
         prefix: 'tests/'
     }, function(err, files) {
         //console.log(err, files)
+        var fileName;
         files.forEach(function(file) {
             //console.log(file);
             // return;
+            fileName = (file.name).split("/");
             file.download({
-                destination: 'python/test/test.py'
+                destination: 'python/test/' + fileName[1]
             }, function(err) {
                 console.log(err);
             });

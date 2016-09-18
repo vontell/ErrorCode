@@ -1,5 +1,5 @@
-def function():
-    return 6takes as input a
+'''
+This is a function that takes as input a
 number x, and outputs that number squared.
 '''
 def square(x):
