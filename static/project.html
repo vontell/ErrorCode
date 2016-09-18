@@ -42,6 +42,7 @@
 	<link rel="shortcut icon" href="favicon.ico">
 
 	<link href="https://fonts.googleapis.com/css?family=Raleway:200,300,400,700" rel="stylesheet">
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert"></script>
 	
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="css/animate.css">
@@ -88,7 +89,7 @@
 	<div id="main-content-section">
 		<div class="container">
             
-            <div class="row no-code-section" ng-hide="code">
+            <div class="row no-code-section" ng-show="code">
                 <h1 class="no-code-title animate-box">Start a Project</h1>
                 <p class="animate-box">It seems that you don't have any code loaded for testing. Click below to begin!</p>
                 <p class="animate-box"><a ng-click="uploadCode()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
@@ -129,17 +130,38 @@
 					<h2>Our pleasure to serve you</h2>
 					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. </p>
 				</div-->
+                
+                <h1 class="project-title animate-box text-center" ng-bind="title"></h1>
+                
                 <div class="col-md-7 text-center item-block animate-box codespec-cont">
                     
                     <h2 class="codespec-title">Code and Specs</h2>
-                    <p>You has code</p>
                     
+                    <!--?prettify linenums=true?-->
+                    <pre class="prettyprint code" ng-bind="code"></pre>
                     
 				</div>
                 <div class="col-md-5 text-center item-block animate-box testcase-cont">
-					<h2 class="codespec-title">Test Cases</h2>
-					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in Bookmarksgrove.</p>
-					<p><a href="#" class="btn btn-primary btn-outline with-arrow dark-button">Learn more <i class="icon-arrow-right"></i></a></p>
+					<h2 class="testcase-title">Test Cases</h2>
+                    
+                    <div ng-hide="testCases.length > 0">
+                        There are no test cases currently submitted for this code base. Begin by adding one below!
+                    </div>
+                    
+                    <div ng-show="testCases.length > 0">
+                        
+                        <div class="panel panel-default testcase-submission" ng-repeat="case in testCases">
+                            <div class="panel-heading">{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon"></i> <i class="icon-sad vote-icon"></i></div></div>
+                            <!--?prettify linenums=true?-->
+                            <div class="panel-body">
+                                <pre class="prettyprint code" ng-bind="case.content"></pre>
+                            </div>
+                            <p class="case-user">{{case.user}}</p>
+                        </div>
+                        
+                    </div>
+                    <br />
+					<p><a href="#" class="btn btn-primary btn-outline with-arrow dark-button">Add Test Case <i class="icon-arrow-right"></i></a></p>
 				</div>
 			</div>
             
@@ -207,6 +229,19 @@
     <!-- AngularJS -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <script src="js/angularstuff.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
+        authDomain: "errorcode-c57a3.firebaseapp.com",
+        databaseURL: "https://errorcode-c57a3.firebaseio.com",
+        storageBucket: "errorcode-c57a3.appspot.com",
+        messagingSenderId: "890888182551"
+      };
+      firebase.initializeApp(config);
+    </script>
 	
 	<!-- MAIN JS -->
 	<script src="js/main.js"></script>
