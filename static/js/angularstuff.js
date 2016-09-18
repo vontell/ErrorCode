@@ -48,7 +48,6 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     // END EXAMPLE CODE
     $scope.code = undefined;
     $scope.author = "Ben Bitdittle"
-    $scope.title = "Helper Functions File"
     
     $scope.submitCode = function() {
         
@@ -60,11 +59,21 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             
             console.log('Uploaded a blob or file!');
 
-            $http.get("/file/code/python.py").then(function(res){
+            $http.get("/run").then(function(){
+                $http.get("/file/code/" + $scope.files[0].name).then(function(res){
                 $scope.code = res.data;
             }, function(err) {
                 $scope.code = err;
             });
+            }, function() {
+                $http.get("/file/code/python.py").then(function(res){
+                $scope.code = res.data;
+            }, function(err) {
+                $scope.code = err;
+            });
+            });
+            
+            
             
         });
         
