@@ -18,11 +18,9 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const errorHandler = require('errorhandler');
-const lusca = require('lusca');
 const dotenv = require('dotenv');
 const flash = require('express-flash');
 const path = require('path');
-const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const sass = require('node-sass-middleware');
@@ -109,6 +107,9 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
 app.get('/run', function(req, res) {
     res.send(testRun());
 });
+app.get('/reallyRun', function(req, res) {
+    res.send(actuallyRunTheTests());
+})
 /*
  * 1. Get code from Firebase.
  * 2. Get test cases from Firebase.
@@ -120,6 +121,7 @@ var testRun = function() {
     bucket.getFiles({
         prefix: "code/"
     }, function(err, files) {
+      console.log(err, files)
         console.log(err, files)
         files.forEach(function(file) {
             console.log(file.name),
@@ -130,14 +132,18 @@ var testRun = function() {
     });
     bucket.getFiles({
         prefix: 'tests/'
-    }, function(errs, files) {
+    }, function(err, files) {
+      //console.log(err, files)
         files.forEach(function(file) {
+            console.log(file);
+            // return;
             file.download({
                 destination: 'python/test/file.name'
-            }, function(err) {});
+            }, function(err) {
+                console.log(err);
+            });
         });
     });
-    
     return (actuallyRunTheTests());
 };
 var actuallyRunTheTests = function() {
@@ -150,7 +156,8 @@ var actuallyRunTheTests = function() {
     var testNames = fs.readdirSync("python/test");
     for (i = 0; i < codeNames.length; i++) {
         for (j = 0; j < testNames.length; j++) {
-            child = exec('python python/testGenerator.py {{codeNames[i], test[j]}}', function(error, stdout, stderr) {
+            console.log(testNames[j]);
+            child = exec('python python/testGenerator.py ' + codeNames[i] + ' ' + testNames[j], function(error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
                 if (error !== null) {
