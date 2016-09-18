@@ -20,7 +20,6 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
 const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -82,11 +81,7 @@ app.use(expressValidator());
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET,
-    store: new MongoStore({
-        url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-        autoReconnect: true
-    })
+    secret: process.env.SESSION_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -123,6 +118,16 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
+    
+    var config = {
+        apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
+        authDomain: "errorcode-c57a3.firebaseapp.com",
+        databaseURL: "https://errorcode-c57a3.firebaseio.com",
+        storageBucket: "errorcode-c57a3.appspot.com",
+        messagingSenderId: "890888182551"
+    };
+    firebase.initializeApp(config);
+    
     res.send(testRun());
 });
 /*
