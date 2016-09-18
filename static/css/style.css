@@ -1228,7 +1228,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .codespec-cont {
-    
+    margin-bottom: 32px;
 }
 
 .testcase-cont {
@@ -1281,6 +1281,11 @@ h1, h2, h3, h4, h5, h6, figure {
     color: white !important;
     font-size: 48px;
     font-weight: 500;
+    padding-bottom: 16px;
+}
+
+.project-author {
+    color: white !important;
     padding-bottom: 32px;
 }
 
@@ -1335,6 +1340,7 @@ h1, h2, h3, h4, h5, h6, figure {
     padding: 12px;
     border-radius: 6px;
     margin-bottom: 32px;
+    margin-top: 0px;
 }
 
 /*# sourceMappingURL=style.css.map */
@@ -1377,4 +1383,22 @@ h1, h2, h3, h4, h5, h6, figure {
     font-weight: 350;
     color: #b7bbbe;
     margin-bottom: -3px;
+}
+
+.dialog-title {
+    color: white;
+}
+
+.test-run-button {
+    margin-top: 16px;
+}
+
+.yellow {
+    color: orange;
+    margin-right: 16px;
+}
+
+.gray {
+    color: grey;
+    margin-right: 16px
 }

@@ -7,7 +7,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Flew &mdash; Free HTML5 Bootstrap Website Template by FreeHTML5.co</title>
+	<title>ErrorCode</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Free HTML5 Website Template by FreeHTML5.co" />
 	<meta name="keywords" content="free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
@@ -91,13 +91,17 @@
             <div class="row no-code-section" ng-hide="code">
                 <h1 class="no-code-title animate-box">Start a Project</h1>
                 <p class="animate-box">It seems that you don't have any code loaded for testing. Click below to begin!</p>
-                <p class="animate-box" ng-hide="myFile"><a ng-click="uploadCode()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
-                    
-                <p class="" ng-show="myFile"><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
                 
-                <form action="/upload" enctype="multipart/form-data" method="post" ng-hide="true">
-                    <input id="uploadCodeButton" type="file" file-model="myFile" ng-bind="myFile"/>
-                </form>
+                <p id="uploadButton" class="animate-box" ng-hide="files.length > 0"><a ng-click="uploadFile()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
+                    
+                <div ng-show="files.length > 0">
+                    <md-card>
+                        <input type="text" ng-bind="title" placeholder="Project name" />
+                    </md-card>
+                    <p class=""><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
+                </div>
+                
+                <input ng-hide="true" type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
                     
                 </p>
                 <br />
@@ -131,6 +135,7 @@
 				</div-->
                 
                 <h1 class="project-title animate-box text-center" ng-bind="title"></h1>
+                <h4 class="project-author animate-box text-center"><em>Written by {{author}}</em></h4>
                 
                 <div class="col-md-7 text-center item-block animate-box codespec-cont">
                     
@@ -150,7 +155,7 @@
                     <div ng-show="testCases.length > 0">
                         
                         <div class="panel panel-default testcase-submission" ng-repeat="case in testCases">
-                            <div class="panel-heading">{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon"></i> <i class="icon-sad vote-icon"></i></div></div>
+                            <div class="panel-heading"><i ng-click="toggleStar($index)" class="icon-star" ng-class="{yellow: case.starred, gray: !case.starred}"></i>{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon" ng-click="incrementVote($index)"></i> <i class="icon-sad vote-icon" ng-click="decrementVote($index)"></i></div></div>
                             <!--?prettify linenums=true?-->
                             <div class="panel-body">
                                 <pre class="prettyprint code test-code" ng-bind="case.content"></pre>
@@ -164,7 +169,32 @@
 				</div>
 			</div>
             
-            
+            <h2 class="codespec-title">Discussion</h2>
+            <div class="row disqus-thread">
+                <br />
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <div id="disqus_thread"></div>
+                    <script>
+                    /**
+                    * RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                    * LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+                    */
+                    /*
+                    var disqus_config = function () {
+                    this.page.url = PAGE_URL; // Replace PAGE_URL with your page's canonical URL variable
+                    this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                    };
+                    */
+                    (function() { // DON'T EDIT BELOW THIS LINE
+                    var d = document, s = d.createElement('script');
+                    s.src = '//avontell.disqus.com/embed.js';
+                    s.setAttribute('data-timestamp', +new Date());
+                    (d.head || d.body).appendChild(s);
+                    })();
+                    </script>
+                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
+                </div>
+            </div>
             
 		</div>
 	</div>
@@ -174,39 +204,33 @@
 		<div class="container">
 			<div class="col-md-3 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
 				<h3>About Us</h3>
-				<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. </p>
+				<p>We are dedicated to testing the limits of code.</p>
 				<p><a href="#" class="btn btn-primary btn-outline with-arrow btn-sm">Join Us <i class="icon-arrow-right"></i></a></p>
 			</div>
-			<div class="col-md-6 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
-				<h3>Our Services</h3>
+			<div class="col-md-4 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
+				<h3>Our Developers</h3>
 				<ul class="float">
-					<li><a href="#">Web Design</a></li>
-					<li><a href="#">Branding &amp; Identity</a></li>
-					<li><a href="#">Free HTML5</a></li>
-					<li><a href="#">HandCrafted Templates</a></li>
-				</ul>
-				<ul class="float">
-					<li><a href="#">Free Bootstrap Template</a></li>
-					<li><a href="#">Free HTML5 Template</a></li>
-					<li><a href="#">Free HTML5 &amp; CSS3 Template</a></li>
-					<li><a href="#">HandCrafted Templates</a></li>
+					<li><a href="#">Aaron Vontell</a></li>
+					<li><a href="#">Jared Simonelli</a></li>
+					<li><a href="#">Cooper Pellaton</a></li>
+					<li><a href="#">Michael Feffer</a></li>
 				</ul>
 
 			</div>
 
-			<div class="col-md-2 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
-				<h3>Follow Us</h3>
+			<div class="col-md-4 col-md-push-1 col-sm-12 col-sm-push-0 col-xs-12 col-xs-push-0">
+				<h3>Contact Us</h3>
 				<ul class="fh5co-social">
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-google-plus"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
+					<li>- vontell@mit.edu</li>
+					<li>- jas1421@rit.edu</li>
+					<li>- pellaton@gatech.edu</li>
+					<li>- mfeffer@mit.edu</li>
 				</ul>
 			</div>
 			
 			
 			<div class="col-md-12 fh5co-copyright text-center">
-				<p>&copy; 2016 Free HTML5 template. All Rights Reserved. <span>Designed with <i class="icon-heart"></i> by <a href="http://freehtml5.co/" target="_blank">FreeHTML5.co</a> Demo Images by <a href="http://unsplash.com/" target="_blank">Unsplash</a></span></p>	
+				<p>&copy; 2016 ErrorCode. All Rights Reserved. <span>Designed and Developed at HACKMIT</span></p>	
 			</div>
 			
 		</div>
@@ -226,7 +250,7 @@
 	<script src="js/jquery.flexslider-min.js"></script>
         
     <!-- AngularJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.js"></script>
     <script src="js/angularstuff.js"></script>
     
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>

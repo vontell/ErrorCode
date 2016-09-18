@@ -2,29 +2,37 @@
   <form ng-cloak>
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>Add Test Case</h2>
+        <h2 class="dialog-title">Add Test Case</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="cancel()">
         </md-button>
       </div>
     </md-toolbar>
 
-    <md-dialog-content>
+    <md-dialog-content ng-controller="addTestController">
       <div class="md-dialog-content">
+          
+        <md-input-container class="md-block">
+            <label>Name / Short Description</label>
+            <input ng-model="test.name">
+        </md-input-container>
+          
+        <p id="uploadButton2" class="animate-box"><a ng-click="uploadFile2()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
+                    
+                    <p class=""><a ng-click="submitCode2()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
+                
+                <input ng-hide="true" type="file" ng-model-instant id="fileToUpload2" multiple onchange="angular.element(this).scope().setFiles2(this)" />
           
       </div>
     </md-dialog-content>
 
     <md-dialog-actions layout="row">
-      <md-button href="http://en.wikipedia.org/wiki/Mango" target="_blank" md-autofocus>
-        More on Wikipedia
-      </md-button>
       <span flex></span>
-      <md-button ng-click="answer('not useful')">
-       Not Useful
+      <md-button ng-click="close()">
+       Cancel
       </md-button>
-      <md-button ng-click="answer('useful')">
-        Useful
+      <md-button ng-click="submit()">
+        Submit
       </md-button>
     </md-dialog-actions>
   </form>
