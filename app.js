@@ -51,17 +51,6 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
-/**
- * Connect to MongoDB.
- */
-mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-mongoose.connection.on('connected', () => {
-    console.log('%s MongoDB connection established!', chalk.green('✓'));
-});
-mongoose.connection.on('error', () => {
-    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-    process.exit();
-});
 var gcs = gcloud.storage({
     projectId: 'errorcode-c57a3',
     keyFilename: 'key.json'
@@ -118,7 +107,6 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
-    
     var config = {
         apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
         authDomain: "errorcode-c57a3.firebaseapp.com",
@@ -127,7 +115,6 @@ app.get('/run', function(req, res) {
         messagingSenderId: "890888182551"
     };
     firebase.initializeApp(config);
-    
     res.send(testRun());
 });
 /*
