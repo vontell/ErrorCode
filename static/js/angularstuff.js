@@ -32,7 +32,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     
     $scope.uploadCode = function() {
         
-        var storageRef = firebase.storage().ref();
+        var storageRef = firebase.storage().ref("code");
         var ref = storageRef.child('project.py');
         
         var file = $scope.myFile;

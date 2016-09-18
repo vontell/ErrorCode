@@ -4,6 +4,7 @@
 const exec = require('child_process').exec,
     child;
 const fileUpload = require('express-fileupload');
+const request = require('request');
 const Busboy = require('busboy');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -119,80 +120,33 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 /*
- * Mutlipart file upload using multiparty and http. Just hit the endpoint on
- * 8080 and you'll get back the form offering a file upload. Will render a
- * result when done.
- */
-// http.createServer(function(req, res) {
-//     if (req.method === 'POST') {
-//         var busboy = new Busboy({
-//             headers: req.headers
-//         });
-//         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-//             var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
-//             file.pipe(fs.createWriteStream(saveTo));
-//         });
-//         busboy.on('finish', function() {
-//             res.writeHead(200, {
-//                 'Connection': 'close'
-//             });
-//             res.end("That's all folks!");
-//         });
-//         return req.pipe(busboy);
-//     }
-//     res.writeHead(404);
-//     res.end();
-// }).listen(8080, function() {
-//     console.log('Listening for requests');
-// });
-
-app.use(fileUpload());
-
-app.post('/uploadCode', function(req, res) {
-    var codeUpload;
- 
-    if (!req.files) {
-        res.send('No files were uploaded.');
-        return;
-    }
- 
-    codeUpload = req.files.codeUpload;
-    codeUpload.mv('/uploads/code/codeUpload.py', function(err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-        else {
-            res.send('File uploaded!');
-        }
-    });
-});
-
-app.post('/uploadTest', function(req, res) {
-    var testUpload;
- 
-    if (!req.files) {
-        res.send('No files were uploaded.');
-        return;
-    }
- 
-    testUpload = req.files.testUpload;
-    testUpload.mv('/uploads/tests/testUpload.py', function(err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-        else {
-            res.send('File uploaded!');
-        }
-    });
-});
-
+* 1. Get code from Firebase.
+* 2. Get test cases from Firebase.
+* 3. Execute the Python test script with the code and the test cases. Return
+* the result.
+*/
 var onTestUpload = function() {
+    var code;
+    var test;
+    var storage = firebase.storage();
+    var pathReference = storage.ref('code');
+    storageRef.child('code').getdownloadURL().then(function(url) {
+        code = request.get();
+    }).catch(function(error) {
+        console.log(error);
+    });
+    storageRef.child('test').getdownloadURL().then(function(url) {
+        test = request.get();
+    }).catch(function(error) {
+        console.log(error);
+    });
+
     /*
      * Child accesses the command line. Execute a python script
      * located in the subfolder "python" and pass it the file of the code,
      * and the test cases.
      */
-    child = exec('python python/testGenerator.py {{recieved_file_one, recieved_file_two}}', function(error, stdout, stderr) {
+    child = exec('python python/testGenerator.py {{code, test}}', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
@@ -200,7 +154,6 @@ var onTestUpload = function() {
         }
     });
 };
-
 /**
  * OAuth authentication routes. (Sign in)
  */
