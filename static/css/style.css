@@ -1228,7 +1228,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .codespec-cont {
-    color: white;
+    
 }
 
 .testcase-cont {
@@ -1242,7 +1242,7 @@ h1, h2, h3, h4, h5, h6, figure {
 
 .testcase-title {
     text-align: center;
-    color: white;
+    color: white !important;
 }
 
 .no-code-title {
@@ -1269,6 +1269,48 @@ h1, h2, h3, h4, h5, h6, figure {
 .lang-image {
     width: 100%;
     padding: 64px;
+}
+
+.code {
+    text-align: left;
+    border: none;
+}
+
+.project-title {
+    margin: auto auto;
+    color: white !important;
+    font-size: 48px;
+    font-weight: 500;
+    padding-bottom: 32px;
+}
+
+.panel-heading {
+    text-align: left;
+}
+
+.panel-body {
+    padding: 0px;
+}
+
+.case-user {
+    text-align: left;
+}
+
+.panel {
+    padding: 0px;
+    border: none;
+}
+
+.vote-icon {
+    padding: 0px;
+}
+
+.votes {
+    display: inline;
+    padding: 0px;
+    margin: 0px;
+    padding-bottom: 4px;
+    margin-right: 8px;
 }
 
 /*# sourceMappingURL=style.css.map */
