@@ -3,6 +3,7 @@
  */
 const exec = require('child_process').exec,
     child;
+const fileUpload = require('express-fileupload');
 const Busboy = require('busboy');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -87,15 +88,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 app.use((req, res, next) => {
-    if (req.path === '/api/upload') {
-        next();
-    } else {
-        lusca.csrf()(req, res, next);
-    }
-});
-app.use(lusca.xframe('SAMEORIGIN'));
-app.use(lusca.xssProtection(true));
-app.use((req, res, next) => {
     res.locals.user = req.user;
     next();
 });
@@ -131,27 +123,67 @@ app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userControl
  * 8080 and you'll get back the form offering a file upload. Will render a
  * result when done.
  */
-http.createServer(function(req, res) {
-    if (req.method === 'POST') {
-        var busboy = new Busboy({
-            headers: req.headers
-        });
-        busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-            var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
-            file.pipe(fs.createWriteStream(saveTo));
-        });
-        busboy.on('finish', function() {
-            res.writeHead(200, {
-                'Connection': 'close'
-            });
-            res.end("That's all folks!");
-        });
-        return req.pipe(busboy);
+// http.createServer(function(req, res) {
+//     if (req.method === 'POST') {
+//         var busboy = new Busboy({
+//             headers: req.headers
+//         });
+//         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
+//             var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
+//             file.pipe(fs.createWriteStream(saveTo));
+//         });
+//         busboy.on('finish', function() {
+//             res.writeHead(200, {
+//                 'Connection': 'close'
+//             });
+//             res.end("That's all folks!");
+//         });
+//         return req.pipe(busboy);
+//     }
+//     res.writeHead(404);
+//     res.end();
+// }).listen(8080, function() {
+//     console.log('Listening for requests');
+// });
+
+app.use(fileUpload());
+
+app.post('/uploadCode', function(req, res) {
+    var codeUpload;
+ 
+    if (!req.files) {
+        res.send('No files were uploaded.');
+        return;
     }
-    res.writeHead(404);
-    res.end();
-}).listen(8080, function() {
-    console.log('Listening for requests');
+ 
+    codeUpload = req.files.codeUpload;
+    codeUpload.mv('/uploads/code/codeUpload.py', function(err) {
+        if (err) {
+            res.status(500).send(err);
+        }
+        else {
+            res.send('File uploaded!');
+        }
+    });
+});
+
+app.post('/uploadTest', function(req, res) {
+    var testUpload;
+ 
+    if (!req.files) {
+        res.send('No files were uploaded.');
+        return;
+    }
+ 
+    testUpload = req.files.testUpload;
+    testUpload.mv('/uploads/tests/testUpload.py', function(err) {
+        if (err) {
+            res.status(500).send(err);
+        }
+        else {
+            res.send('File uploaded!');
+        }
+    });
 });
 
 var onTestUpload = function() {
