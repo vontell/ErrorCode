@@ -209,18 +209,24 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
     
     $scope.submit = function() {
         
-        var newTest = {
-            name: "" + $scope.projectname,
-            user: "The Correct Horse",
-            votes: 0,
-            starred: false,
-            success: $scope.success ? true : false,
-            content: "# Coming soon..."
-        };
-        
-        $rootScope.addTestCase(newTest);
-        reload_js('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert');
-        $mdDialog.cancel();
+        $http.get("/file/test/" + $scope.files[0].name).then(function(res){
+                $scope.code = res.data;
+            
+                var newTest = {
+                    name: "" + $scope.projectname,
+                    user: "The Correct Horse",
+                    votes: 0,
+                    starred: false,
+                    success: $scope.success ? true : false,
+                    content: res.data
+                };
+
+                $rootScope.addTestCase(newTest);
+                $mdDialog.cancel();
+            
+            }, function(err) {
+                $scope.code = err;
+        });
         
     };
     
