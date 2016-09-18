@@ -1,1 +1,2 @@
-assertEquals(function(), 6)
+def function():
+    return 6

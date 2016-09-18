@@ -1392,3 +1392,13 @@ h1, h2, h3, h4, h5, h6, figure {
 .test-run-button {
     margin-top: 16px;
 }
+
+.yellow {
+    color: orange;
+    margin-right: 16px;
+}
+
+.gray {
+    color: grey;
+    margin-right: 16px
+}

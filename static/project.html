@@ -91,13 +91,17 @@
             <div class="row no-code-section" ng-hide="code">
                 <h1 class="no-code-title animate-box">Start a Project</h1>
                 <p class="animate-box">It seems that you don't have any code loaded for testing. Click below to begin!</p>
-                <p class="animate-box" ng-hide="myFile"><a ng-click="uploadCode()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
-                    
-                <p class="" ng-show="myFile"><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
                 
-                <form action="/upload" enctype="multipart/form-data" method="post" ng-hide="true">
-                    <input id="uploadCodeButton" type="file" file-model="myFile" ng-bind="myFile"/>
-                </form>
+                <p id="uploadButton" class="animate-box" ng-hide="files.length > 0"><a ng-click="uploadFile()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
+                    
+                <div ng-show="files.length > 0">
+                    <md-card>
+                        <input type="text" ng-bind="title" placeholder="Project name" />
+                    </md-card>
+                    <p class=""><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
+                </div>
+                
+                <input ng-hide="true" type="file" ng-model-instant id="fileToUpload" multiple onchange="angular.element(this).scope().setFiles(this)" />
                     
                 </p>
                 <br />
@@ -151,7 +155,7 @@
                     <div ng-show="testCases.length > 0">
                         
                         <div class="panel panel-default testcase-submission" ng-repeat="case in testCases">
-                            <div class="panel-heading">{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon"></i> <i class="icon-sad vote-icon"></i></div></div>
+                            <div class="panel-heading"><i ng-click="toggleStar($index)" class="icon-star" ng-class="{yellow: case.starred, gray: !case.starred}"></i>{{case.name}}<div class="pull-right"><p class="votes">{{case.votes}}</p><i class="icon-happy vote-icon" ng-click="incrementVote($index)"></i> <i class="icon-sad vote-icon" ng-click="decrementVote($index)"></i></div></div>
                             <!--?prettify linenums=true?-->
                             <div class="panel-body">
                                 <pre class="prettyprint code test-code" ng-bind="case.content"></pre>

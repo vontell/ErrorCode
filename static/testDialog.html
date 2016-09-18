@@ -9,7 +9,7 @@
       </div>
     </md-toolbar>
 
-    <md-dialog-content>
+    <md-dialog-content ng-controller="addTestController">
       <div class="md-dialog-content">
           
         <md-input-container class="md-block">
@@ -17,11 +17,11 @@
             <input ng-model="test.name">
         </md-input-container>
           
-        <form action="/upload" enctype="multipart/form-data" method="post" ng-hide="true">
-            <input id="uploadCodeButton" type="file" file-model="myFile" ng-bind="myFile"/>
-        </form>
-          
-          <p><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow test-run-button">Run Test Case <i class="icon-arrow-right"></i></a></p>
+        <p id="uploadButton2" class="animate-box"><a ng-click="uploadFile2()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
+                    
+                    <p class=""><a ng-click="submitCode2()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
+                
+                <input ng-hide="true" type="file" ng-model-instant id="fileToUpload2" multiple onchange="angular.element(this).scope().setFiles2(this)" />
           
       </div>
     </md-dialog-content>
