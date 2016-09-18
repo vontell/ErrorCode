@@ -1,9 +1,11 @@
 /**
  * Module dependencies.
  */
+const firebase = require('firebase');
 const exec = require('child_process').exec,
     child;
 const fileUpload = require('express-fileupload');
+const request = require('request');
 const Busboy = require('busboy');
 const inspect = require('util').inspect;
 const express = require('express');
@@ -20,7 +22,6 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
 const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -55,14 +56,6 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-mongoose.connection.on('connected', () => {
-    console.log('%s MongoDB connection established!', chalk.green('✓'));
-});
-mongoose.connection.on('error', () => {
-    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-    process.exit();
-});
 /**
  * Express configuration.
  */
@@ -78,11 +71,7 @@ app.use(expressValidator());
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET,
-    store: new MongoStore({
-        url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-        autoReconnect: true
-    })
+    secret: process.env.SESSION_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -118,89 +107,66 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/run', function(req, res) {
+    
+    var config = {
+        apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
+        authDomain: "errorcode-c57a3.firebaseapp.com",
+        databaseURL: "https://errorcode-c57a3.firebaseio.com",
+        storageBucket: "errorcode-c57a3.appspot.com",
+        messagingSenderId: "890888182551"
+    };
+    firebase.initializeApp(config);
+    
+    res.send(testRun());
+});
 /*
- * Mutlipart file upload using multiparty and http. Just hit the endpoint on
- * 8080 and you'll get back the form offering a file upload. Will render a
- * result when done.
+ * 1. Get code from Firebase.
+ * 2. Get test cases from Firebase.
+ * 3. Execute the Python test script with the code and the test cases. Return
+ * the result.
  */
-// http.createServer(function(req, res) {
-//     if (req.method === 'POST') {
-//         var busboy = new Busboy({
-//             headers: req.headers
-//         });
-//         busboy.on('file', function(fieldname, file, filename, encoding, mimetype) {
-//             var saveTo = path.join(os.tmpDir(), path.basename(fieldname));
-//             file.pipe(fs.createWriteStream(saveTo));
-//         });
-//         busboy.on('finish', function() {
-//             res.writeHead(200, {
-//                 'Connection': 'close'
-//             });
-//             res.end("That's all folks!");
-//         });
-//         return req.pipe(busboy);
-//     }
-//     res.writeHead(404);
-//     res.end();
-// }).listen(8080, function() {
-//     console.log('Listening for requests');
-// });
-
-app.use(fileUpload());
-
-app.post('/uploadCode', function(req, res) {
-    var codeUpload;
- 
-    if (!req.files) {
-        res.send('No files were uploaded.');
-        return;
-    }
- 
-    codeUpload = req.files.codeUpload;
-    codeUpload.mv('/uploads/code/codeUpload.py', function(err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-        else {
-            res.send('File uploaded!');
-        }
+var testRun = function() {
+    var code;
+    var test;
+    var storage = firebase.storage();
+    var pathReference = storage.ref();
+    storageRef.child('code').getdownloadURL().then(function(url) {
+        code = request.get("http://errorcode-c57a3.appspot.com/code/");
+    }).catch(function(error) {
+        console.log(error);
     });
-});
-
-app.post('/uploadTest', function(req, res) {
-    var testUpload;
- 
-    if (!req.files) {
-        res.send('No files were uploaded.');
-        return;
-    }
- 
-    testUpload = req.files.testUpload;
-    testUpload.mv('/uploads/tests/testUpload.py', function(err) {
-        if (err) {
-            res.status(500).send(err);
-        }
-        else {
-            res.send('File uploaded!');
-        }
+    storageRef.child('test').getdownloadURL().then(function(url) {
+        test = request.get();
+    }).catch(function(error) {
+        console.log(error);
     });
-});
-
-var onTestUpload = function() {
     /*
      * Child accesses the command line. Execute a python script
      * located in the subfolder "python" and pass it the file of the code,
      * and the test cases.
      */
-    child = exec('python python/testGenerator.py {{recieved_file_one, recieved_file_two}}', function(error, stdout, stderr) {
+
+     ///THIS NEEDS TO CAT TO A LOG FILE AND RETURN THE VALUE
+    child = exec('python python/testGenerator.py {{code, test}}', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
             console.log('exec error: ' + error);
         }
     });
-};
 
+    child = exec('generated.py', function(error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });
+
+    return testresults.log;
+
+};
 /**
  * OAuth authentication routes. (Sign in)
  */
