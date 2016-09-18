@@ -14,27 +14,9 @@ const fs = require('fs');
 const http = require('http');
 const util = require('util');
 const path = require('path');
-const passport = require('passport');
-const upload = multer({
-    dest: path.join(__dirname, 'uploads')
-});
-/**
- * Load environment variables from .env file, where API keys and passwords are configured.
- */
-dotenv.load({
-    path: '.env.example'
-});
-/**
- * Controllers (route handlers).
- */
-const homeController = require('./controllers/home');
-const userController = require('./controllers/user');
-const apiController = require('./controllers/api');
-const contactController = require('./controllers/contact');
-/**
- * API keys and Passport configuration.
- */
-const passportConfig = require('./config/passport');
+const chalk = require('chalk');
+
+
 /**
  * Create Express server.
  */
@@ -48,21 +30,8 @@ var gcs = gcloud.storage({
  */
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('static'));
-app.use(compression());
-app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-app.use(expressValidator());
-app.use(session({
-    resave: true,
-    saveUninitialized: true,
-    secret: process.env.SESSION_SECRET
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+
+
 app.use((req, res, next) => {
     res.locals.user = req.user;
     next();
@@ -142,10 +111,6 @@ var actuallyRunTheTests = function() {
     return ('python/testresults.log');
 };
 
-/**
- * Error Handler.
- */
-app.use(errorHandler());
 /**
  * Start Express server.
  */
