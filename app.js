@@ -107,14 +107,6 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
-    var config = {
-        apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
-        authDomain: "errorcode-c57a3.firebaseapp.com",
-        databaseURL: "https://errorcode-c57a3.firebaseio.com",
-        storageBucket: "errorcode-c57a3.appspot.com",
-        messagingSenderId: "890888182551"
-    };
-    firebase.initializeApp(config);
     res.send(testRun());
 });
 /*
@@ -124,11 +116,9 @@ app.get('/run', function(req, res) {
  * the result.
  */
 var testRun = function() {
-    var code;
-    var test;
     var bucket = gcs.bucket('errorcode-c57a3.appspot.com');
     bucket.getFiles({
-        prefix: 'code/'
+        prefix: "code/"
     }, function(err, files) {
         console.log(err, files)
         files.forEach(function(file) {
@@ -147,6 +137,10 @@ var testRun = function() {
             }, function(err) {});
         });
     });
+    
+    return (actuallyRunTheTests());
+};
+var actuallyRunTheTests = function() {
     /*
      * Child accesses the command line. Execute a python script
      * located in the subfolder "python" and pass it the file of the code,
@@ -155,8 +149,8 @@ var testRun = function() {
     var codeNames = fs.readdirSync("python/code");
     var testNames = fs.readdirSync("python/test");
     for (i = 0; i < codeNames.length; i++) {
-        for (i = 0; i < testNames.length; i++) {
-            child = exec('python python/testGenerator.py {{codeNames[i], test}}', function(error, stdout, stderr) {
+        for (j = 0; j < testNames.length; j++) {
+            child = exec('python python/testGenerator.py {{codeNames[i], test[j]}}', function(error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
                 if (error !== null) {
