@@ -44,7 +44,7 @@
 	<link rel="shortcut icon" href="favicon.ico">
 
 	<link href="https://fonts.googleapis.com/css?family=Raleway:200,300,400,700" rel="stylesheet">
-    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert" defer></script>
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert"></script>
 	
 	<!-- Animate.css -->
 	<link rel="stylesheet" href="css/animate.css">
@@ -95,9 +95,9 @@
                 <p id="uploadButton" class="animate-box" ng-hide="files.length > 0"><a ng-click="uploadFile()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
                     
                 <div ng-show="files.length > 0">
-                    <md-card>
-                        <input type="text" ng-bind="title" placeholder="Project name" />
-                    </md-card>
+                    <!--md-card class="name-entry">
+                        <input type="text" ng-bind="title" placeholder="Project name" id="nameInput"/>
+                    </md-card-->
                     <p class=""><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
                 </div>
                 
@@ -134,7 +134,7 @@
 					<p>Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. </p>
 				</div-->
                 
-                <h1 class="project-title animate-box text-center" ng-bind="title"></h1>
+                <h1 class="project-title animate-box text-center">My Simple Python Project</h1>
                 <h4 class="project-author animate-box text-center"><em>Written by {{author}}</em></h4>
                 
                 <div class="col-md-7 text-center item-block animate-box codespec-cont">
@@ -142,7 +142,7 @@
                     <h2 class="codespec-title">Code and Specs</h2>
                     
                     <!--?prettify linenums=true?-->
-                    <pre class="prettyprint code" ng-bind="code"></pre>
+                    <pre class="prettyprint code lang-py" ng-bind="code"></pre>
                     <p><a ng-click="openSpecDialog()" class="btn btn-primary btn-outline with-arrow dark-button">Review Specs<i class="icon-arrow-right"></i></a></p>
                     
 				</div>
@@ -175,9 +175,8 @@
                     <br />
 					<p><a ng-click="openTestDialog()" class="btn btn-primary btn-outline with-arrow dark-button">Add Test Case <i class="icon-arrow-right"></i></a></p>
 				</div>
-			</div>
-            
-            <h2 class="codespec-title">Discussion</h2>
+                
+                <h2 class="codespec-title">Discussion</h2>
             <div class="row disqus-thread">
                 <br />
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -203,6 +202,8 @@
                     <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
                 </div>
             </div>
+                
+			</div>
             
 		</div>
 	</div>

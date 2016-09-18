@@ -4,9 +4,6 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     
     // EXAMPLE CODE
     
-    //var exampleString = undefined;
-    var exampleString = "\'\'\'\r\nThis is a function that takes as input a\r\nnumber x, and outputs that number squared.\r\n\'\'\'\r\ndef square(x):\r\n    return x * x\r\n\r\n\'\'\'\r\nThis function returns whether a given list\r\nis empty or not.\r\n\'\'\'\r\ndef isEmpty(list):\r\n    numItems = len(list)\r\n    return numItems == 0"
-    
     $scope.testCases = [];
     
     var testCase1 = {
@@ -58,9 +55,8 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     }
     
     // END EXAMPLE CODE
-    $scope.code = exampleString;
+    $scope.code = undefined;
     $scope.author = "Ben Bitdittle"
-    $scope.title = "Helper Functions File"
     
     $scope.submitCode = function() {
         
@@ -72,13 +68,22 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             
             console.log('Uploaded a blob or file!');
 
-            var r = new FileReader();
-            r.onload = function(e) { 
-                var contents = e.target.result;
-                // Do something with contents
-                $scope.setFiles(null);
-                $scope.files = null;
-            }
+            $http.get("/run").then(function(){
+                $http.get("/file/code/" + $scope.files[0].name).then(function(res){
+                $scope.code = res.data;
+                reload_js('https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=desert');
+            }, function(err) {
+                $scope.code = err;
+            });
+            }, function() {
+                $http.get("/file/code/python.py").then(function(res){
+                $scope.code = res.data;
+            }, function(err) {
+                $scope.code = err;
+            });
+            });
+            
+            
             
         });
         
@@ -213,19 +218,31 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
     
     $scope.submit = function() {
         
-        var newTest = {
-            name: "" + $scope.projectname,
-            user: "The Correct Horse",
-            votes: 0,
-            starred: false,
-            success: $scope.success ? true : false,
-            content: "# Coming soon..."
-        };
-        
-        $rootScope.addTestCase(newTest);
-        
-        $mdDialog.cancel();
+        $http.get("/file/test/" + $scope.files[0].name).then(function(res){
+                $scope.code = res.data;
+            
+                var newTest = {
+                    name: "" + $scope.projectname,
+                    user: "The Correct Horse",
+                    votes: 0,
+                    starred: false,
+                    success: $scope.success ? true : false,
+                    content: res.data
+                };
+
+                $rootScope.addTestCase(newTest);
+                $mdDialog.cancel();
+            
+            }, function(err) {
+                $scope.code = err;
+        });
         
     };
     
 });
+
+
+function reload_js(src) {
+    $('script[src="' + src + '"]').remove();
+    $('<script>').attr('src', src).appendTo('head');
+}
