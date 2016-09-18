@@ -226,7 +226,7 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
                     user: "The Correct Horse",
                     votes: 0,
                     starred: false,
-                    success: $scope.success ? true : false,
+                    success: true,
                     content: res.data
                 };
 
