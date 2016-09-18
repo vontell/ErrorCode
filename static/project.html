@@ -39,6 +39,8 @@
 	<meta name="twitter:card" content="" />
 
 	<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.css">
+
 	<link rel="shortcut icon" href="favicon.ico">
 
 	<link href="https://fonts.googleapis.com/css?family=Raleway:200,300,400,700" rel="stylesheet">
@@ -70,15 +72,12 @@
 	<header id="fh5co-header" role="banner">
 		<div class="container">
 			<div class="header-inner">
-				<h1><a href="index.html">Flew</a></h1>
+				<h1><a href="index.html">ErrorCode</a></h1>
 				<nav role="navigation">
 					<ul>
-						<li><a href="work.html">Work</a></li>
-						<li><a href="services.html">Services</a></li>
-						<li><a href="pricing.html">Pricing</a></li>
-						<li class="active"><a href="about.html">About</a></li>
-						<li><a href="contact.html">Contact</a></li>
-						<li class="cta"><a href="#">Get started</a></li>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="projects.html">Projects</a></li>
+						<li class="cta"><a href="profile.html">Profile</a></li>
 					</ul>
 				</nav>
 			</div>
@@ -92,12 +91,12 @@
             <div class="row no-code-section" ng-hide="code">
                 <h1 class="no-code-title animate-box">Start a Project</h1>
                 <p class="animate-box">It seems that you don't have any code loaded for testing. Click below to begin!</p>
-                <p class="animate-box" ng-hide="myFile"><a ng-click="uploadCodeFile()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
+                <p class="animate-box" ng-hide="myFile"><a ng-click="uploadCode()" class="btn btn-primary btn-outline with-arrow dark-button">Upload Code <i class="icon-arrow-right"></i></a>
                     
-                <p class="" ng-show="myFile"><a ng-click="uploadCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
+                <p class="" ng-show="myFile"><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow dark-button">Start Testing <i class="icon-arrow-right"></i></a>
                 
                 <form action="/upload" enctype="multipart/form-data" method="post" ng-hide="true">
-                    <input id="uploadCodeButton" type="file" file-model="myFile"/>
+                    <input id="uploadCodeButton" type="file" file-model="myFile" ng-bind="myFile"/>
                 </form>
                     
                 </p>
@@ -161,7 +160,7 @@
                         
                     </div>
                     <br />
-					<p><a href="#" class="btn btn-primary btn-outline with-arrow dark-button">Add Test Case <i class="icon-arrow-right"></i></a></p>
+					<p><a ng-click="openTestDialog()" class="btn btn-primary btn-outline with-arrow dark-button">Add Test Case <i class="icon-arrow-right"></i></a></p>
 				</div>
 			</div>
             
@@ -227,8 +226,17 @@
 	<script src="js/jquery.flexslider-min.js"></script>
         
     <!-- AngularJS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
     <script src="js/angularstuff.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-cookies.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-resource.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-touch.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0-rc2/angular-material.js"></script>
     
     <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
     <script>
