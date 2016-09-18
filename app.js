@@ -62,9 +62,9 @@ mongoose.connection.on('error', () => {
     console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
     process.exit();
 });
-var gcloud = require('gcloud')({
-    projectId: 'errorcode - c57a3',
-    keyFilename: '/path/to/keyfile.json'
+var gcs = gcloud.storage({
+    projectId: 'errorcode-c57a3',
+    keyFilename: 'key.json'
 });
 /**
  * Express configuration.
