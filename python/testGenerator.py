@@ -22,10 +22,15 @@ generatedFile.write(functionFile.read())
 generatedFile.write('\n')
 functionFile.close()
 counter = 0
-for line in testFile:
+for lineNum in range(0, len(testFile)):
+	line = testFile[lineNum]
     generatedFile.write("class UserTestCase" +
                         str(counter) + "(unittest.TestCase):\n")
+    if (counter == 0):
+    	generatedFile.write("pass")
     generatedFile.write("    def runTest(self):\n")
+    if (counter == 0):
+    	generatedFile.write("pass")
     if(not line.isspace()):
         generatedFile.write("    " + line + "\n")  # "    self."
         # if("def" in line):

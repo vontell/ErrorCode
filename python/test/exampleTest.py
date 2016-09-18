@@ -1,2 +1,2 @@
-def function():
-    return 6
+# Tests a simple square method
+assertEquals(square(1), 1)
