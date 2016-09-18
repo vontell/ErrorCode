@@ -25,7 +25,7 @@ for line in testFile:
     generatedFile.write("class UserTestCase" +
                         str(counter) + "(unittest.TestCase):\n")
     generatedFile.write("    def runTest(self):\n")
-    if(!line.isspace()):
+    if(not line.isspace()):
         generatedFile.write("    " + "    self." + line + "\n")
     counter += 1
 

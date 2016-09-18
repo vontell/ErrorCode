@@ -5,23 +5,25 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     // EXAMPLE CODE
     
     //var exampleString = undefined;
-    var exampleString = "# Merge Sort Python Solution\r\n# By: Mark Miyashita\r\n\r\ndef merge_sort(lst):\r\n    \"\"\"Sorts the input list using the merge sort algorithm.\r\n\r\n    >>> lst = [4, 5, 1, 6, 3]\r\n    >>> merge_sort(lst)\r\n    [1, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if len(lst) <= 1:\r\n        return lst\r\n    mid = len(lst) \/\/ 2\r\n    left = merge_sort(lst[:mid])\r\n    right = merge_sort(lst[mid:])\r\n    return merge(left, right)\r\n\r\ndef merge(left, right):\r\n    \"\"\"Takes two sorted lists and returns a single sorted list by comparing the\r\n    elements one at a time.\r\n\r\n    >>> left = [1, 5, 6]\r\n    >>> right = [2, 3, 4]\r\n    >>> merge(left, right)\r\n    [1, 2, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if not left:\r\n        return right\r\n    if not right:\r\n        return left\r\n    if left[0] < right[0]:\r\n        return [left[0]] + merge(left[1:], right)\r\n    return [right[0]] + merge(left, right[1:])"
+    var exampleString = "\'\'\'\r\nThis is a function that takes as input a\r\nnumber x, and outputs that number squared.\r\n\'\'\'\r\ndef square(x):\r\n    return x * x\r\n\r\n\'\'\'\r\nThis function returns whether a given list\r\nis empty or not.\r\n\'\'\'\r\ndef isEmpty(list):\r\n    numItems = len(list)\r\n    return numItems == 0"
     
     $scope.testCases = [];
     
     var testCase1 = {
-        name: "Zero-length List",
+        name: "Simple Square",
         user: "vontell",
         votes: 1,
         starred: false,
-        content: "# This will test the operation on empty lists\r\nresult = merge_sort([])\r\nassertEquals(result, [])"
+        passed: true,
+        content: "# This will test the square operation on 1\r\nresult = square(1)\r\nassertEquals(result, 1)"
     }
     var testCase2 = {
-        name: "Simple List",
+        name: "The list of not none",
         user: "cooperp",
         votes: 5,
         starred: true,
-        content: "# This will test sorting some easy lists\r\nresult = merge_sort([2,1,4])\r\nassertEquals(result, [1,2,4])"
+        passed: false,
+        content: "# This will test a list with some elements\r\nresult = isEmpty([2,1,4])\r\nassertEquals(result, false)"
     }
     
     $scope.setFiles = function(element) {
@@ -49,7 +51,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     // END EXAMPLE CODE
     $scope.code = exampleString;
     $scope.author = "Ben Bitdittle"
-    $scope.title = "Merge Sort Implementation"
+    $scope.title = "Helper Functions File"
     
     $scope.submitCode = function() {
         
@@ -95,7 +97,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     */
     $rootScope.addTestCase = function(testCase) {
         
-        testCases.append(testCase);
+        $scope.testCases.push(testCase);
         
     };
     
@@ -121,18 +123,21 @@ project.controller('testController', function($rootScope, $scope, $http, $window
 
 project.controller('addTestController', function($rootScope, $scope, $http, $window, $mdDialog) {
     
-                 $scope.setFiles2 = function(element) {
-                    $scope.$apply(function(scope) {
-                      console.log('files:', element.files);
-                      // Turn the FileList object into an Array
-                        scope.files = []
-                        for (var i = 0; i < element.files.length; i++) {
-                          scope.files.push(element.files[i])
-                          $("#uploadButton2").hide();
-                        }
-                      scope.progressVisible = false
-                      });
-                    };
+    var success;
+    var name;
+    
+     $scope.setFiles2 = function(element) {
+        $scope.$apply(function(scope) {
+          console.log('files:', element.files);
+          // Turn the FileList object into an Array
+            scope.files = []
+            for (var i = 0; i < element.files.length; i++) {
+              scope.files.push(element.files[i])
+              $("#uploadButton2").hide();
+            }
+          scope.progressVisible = false
+          });
+        };
 
         $scope.uploadFile2 = function() {
 
@@ -140,25 +145,44 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
 
         }
         
-                    $scope.submitCode2 = function() {
+        $scope.submitCode2 = function() {
 
-                        var storageRef = firebase.storage().ref();
-                        var ref = storageRef.child('tests/' + $scope.files[0].name);
+            var storageRef = firebase.storage().ref();
+            var ref = storageRef.child('tests/' + $scope.files[0].name);
 
-                        var file = $scope.files[0];
-                        ref.put(file).then(function(snapshot) {
+            var file = $scope.files[0];
+            ref.put(file).then(function(snapshot) {
 
-                            console.log('Uploaded a blob or file!');
+                console.log('Uploaded a blob or file!');
+                
+                $scope.testing = true;
 
-                            $http.get("/run").then(function(res) {
-                                console.log(res);
-                            }, function(err) {
-                                console.log(err);
-                            })
+                $http.get("/run").then(function(res) {
+                    console.log(res);
+                    
+                    // Find the number of failures
+                    var errorIndex = res.data.lastIndexOf("errors=");
+                    console.log(res.data.charAt(errorIndex+7));
+                    
+                    success = res.data.charAt(errorIndex+7) == "0"
+                    
+                    if(success) {
+                        $scope.success = true;
+                        $scope.failure = false;
+                        $scope.testing = false;
+                    } else {
+                        $scope.success = false;
+                        $scope.failure = true;
+                        $scope.testing = false;
+                    }
+                    
+                }, function(err) {
+                    console.log(err);
+                })
 
-                        });
+            });
 
-                    };
+        };
     
     $scope.close = function() {
         
@@ -167,6 +191,17 @@ project.controller('addTestController', function($rootScope, $scope, $http, $win
     };
     
     $scope.submit = function() {
+        
+        var newTest = {
+            name: "" + $scope.projectname,
+            user: "The Correct Horse",
+            votes: 0,
+            starred: false,
+            success: $scope.success ? true : false,
+            content: "# Coming soon..."
+        };
+        
+        $rootScope.addTestCase(newTest);
         
         $mdDialog.cancel();
         

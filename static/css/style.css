@@ -1402,3 +1402,16 @@ h1, h2, h3, h4, h5, h6, figure {
     color: grey;
     margin-right: 16px
 }
+
+.testing-stuff {
+    text-align: center;
+    margin: auto auto;
+}
+
+.test-good-result {
+    color: teal
+}
+
+.test-bad-result {
+    color: crimson;
+}
