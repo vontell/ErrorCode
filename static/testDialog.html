@@ -17,9 +17,9 @@
             <input ng-model="projectname">
         </md-input-container>
           
-        <p id="uploadButton2" class="" ng-hide="files.length > 0"><a ng-click="uploadFile2()" class="btn btn-primary btn-outline with-arrow">Upload Code <i class="icon-arrow-right"></i></a>
+        <p id="uploadButton2" ng-hide="files.length > 0"><a ng-click="uploadFile2()" class="btn btn-primary center btn-outline with-arrow">Upload Code <i class="icon-arrow-right"></i></a>
                     
-        <p class="" ng-show="files.length > 0"><a ng-click="submitCode2()" class="btn btn-primary btn-outline with-arrow">Start Testing <i class="icon-arrow-right"></i></a>
+        <p ng-show="files.length > 0"><a ng-click="submitCode2()" class="btn btn-primary btn-outline with-arrow center">Start Testing <i class="icon-arrow-right"></i></a>
                 
         <input ng-hide="true" type="file" ng-model-instant id="fileToUpload2" multiple onchange="angular.element(this).scope().setFiles2(this)" />
             
