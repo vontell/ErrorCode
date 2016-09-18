@@ -1,14 +1,13 @@
 /**
  * Module dependencies.
  */
+var gcloud = require('gcloud');
 const exec = require('child_process').exec,
     child;
 const fileUpload = require('express-fileupload');
 const request = require('request');
-const Busboy = require('busboy');
 const inspect = require('util').inspect;
 const express = require('express');
-const multiparty = require('multiparty');
 const os = require('os');
 const fs = require('fs');
 const http = require('http');
@@ -21,7 +20,6 @@ const chalk = require('chalk');
 const errorHandler = require('errorhandler');
 const lusca = require('lusca');
 const dotenv = require('dotenv');
-const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -53,16 +51,9 @@ const passportConfig = require('./config/passport');
  * Create Express server.
  */
 const app = express();
-/**
- * Connect to MongoDB.
- */
-mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
-mongoose.connection.on('connected', () => {
-    console.log('%s MongoDB connection established!', chalk.green('✓'));
-});
-mongoose.connection.on('error', () => {
-    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
-    process.exit();
+var gcs = gcloud.storage({
+    projectId: 'errorcode-c57a3',
+    keyFilename: 'key.json'
 });
 /**
  * Express configuration.
@@ -79,11 +70,7 @@ app.use(expressValidator());
 app.use(session({
     resave: true,
     saveUninitialized: true,
-    secret: process.env.SESSION_SECRET,
-    store: new MongoStore({
-        url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-        autoReconnect: true
-    })
+    secret: process.env.SESSION_SECRET
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -120,6 +107,14 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
+    var config = {
+        apiKey: "AIzaSyCBXy9kpuP2BZc7zIKaj53opFLtMpYG2tU",
+        authDomain: "errorcode-c57a3.firebaseapp.com",
+        databaseURL: "https://errorcode-c57a3.firebaseio.com",
+        storageBucket: "errorcode-c57a3.appspot.com",
+        messagingSenderId: "890888182551"
+    };
+    firebase.initializeApp(config);
     res.send(testRun());
 });
 /*
@@ -131,43 +126,53 @@ app.get('/run', function(req, res) {
 var testRun = function() {
     var code;
     var test;
-    var storage = firebase.storage();
-    var pathReference = storage.ref('code');
-    storageRef.child('code').getdownloadURL().then(function(url) {
-        code = request.get();
-    }).catch(function(error) {
-        console.log(error);
+    var bucket = gcs.bucket('errorcode-c57a3.appspot.com');
+    bucket.getFiles({
+        prefix: 'code/'
+    }, function(err, files) {
+        console.log(err, files)
+        files.forEach(function(file) {
+            console.log(file.name),
+            file.download({
+                destination: 'python/code/file.name'
+            }, function(err) {});
+        });
     });
-    storageRef.child('test').getdownloadURL().then(function(url) {
-        test = request.get();
-    }).catch(function(error) {
-        console.log(error);
+    bucket.getFiles({
+        prefix: 'tests/'
+    }, function(errs, files) {
+        files.forEach(function(file) {
+            file.download({
+                destination: 'python/test/file.name'
+            }, function(err) {});
+        });
     });
     /*
      * Child accesses the command line. Execute a python script
      * located in the subfolder "python" and pass it the file of the code,
      * and the test cases.
      */
-
-     ///THIS NEEDS TO CAT TO A LOG FILE AND RETURN THE VALUE
-    child = exec('python python/testGenerator.py {{code, test}}', function(error, stdout, stderr) {
+    var codeNames = fs.readdirSync("python/code");
+    var testNames = fs.readdirSync("python/test");
+    for (i = 0; i < codeNames.length; i++) {
+        for (i = 0; i < testNames.length; i++) {
+            child = exec('python python/testGenerator.py {{codeNames[i], test}}', function(error, stdout, stderr) {
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if (error !== null) {
+                    console.log('exec error: ' + error);
+                }
+            });
+        };
+    };
+    child = exec('python/generated.py', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
             console.log('exec error: ' + error);
         }
     });
-
-    child = exec('generated.py', function(error, stdout, stderr) {
-        console.log('stdout: ' + stdout);
-        console.log('stderr: ' + stderr);
-        if (error !== null) {
-            console.log('exec error: ' + error);
-        }
-    });
-
-    return testresults.log;
-
+    return (testresults.log);
 };
 /**
  * OAuth authentication routes. (Sign in)
