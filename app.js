@@ -37,12 +37,16 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/file/:fileLocation/:fileNames', function(req, res){
+    var filePath = 'python' + "/" + req.params['fileLocation'] + "/" + req.params['fileNames'];
+    var contents = fs.readFileSync(filePath);
+    res.setHeader('content-type', 'text/javascript');
+    res.send(contents);
+})
 
 app.get('/run', function(req, res) {
     var JSONPath = testRun();
     var contents = fs.readFileSync(JSONPath);
-    // var jsonContent = JSON.parse(contents);
-    // res.send(JSON.strinify(jsonContent));
     res.setHeader('content-type', 'text/javascript');
     res.send(contents);
 })
