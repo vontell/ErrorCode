@@ -63,6 +63,7 @@
     "tumblr.js": "^1.1.1",
     "twilio": "^3.3.1-edge",
     "twit": "^2.2.4",
+    "unirest": "^0.5.1",
     "util": "^0.10.3",
     "validator": "^5.6.0"
   },

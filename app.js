@@ -8,6 +8,8 @@ const fileUpload = require('express-fileupload');
 const request = require('request');
 const inspect = require('util').inspect;
 const express = require('express');
+var router = express.Router();
+var unirest = require('unirest');
 const os = require('os');
 const fs = require('fs');
 const http = require('http');
@@ -84,34 +86,61 @@ app.use(function(req, res, next) {
     }
     next();
 });
-/**
- * Primary app routes.
- */
-app.get('/', homeController.index);
-app.get('/login', userController.getLogin);
-app.post('/login', userController.postLogin);
-app.get('/logout', userController.logout);
-app.get('/forgot', userController.getForgot);
-app.post('/forgot', userController.postForgot);
-app.get('/reset/:token', userController.getReset);
-app.post('/reset/:token', userController.postReset);
-app.get('/signup', userController.getSignup);
-app.post('/signup', userController.postSignup);
-app.get('/contact', contactController.getContact);
-app.post('/contact', contactController.postContact);
-app.get('/account', passportConfig.isAuthenticated, userController.getAccount);
-app.post('/account/profile', passportConfig.isAuthenticated, userController.postUpdateProfile);
-app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
-app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
-app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
-app.get('/run', function(req, res) {
-    var JSONPath = testRun();
-    var contents = fs.readFileSync(JSONPath);
-    // var jsonContent = JSON.parse(contents);
-    // res.send(JSON.strinify(jsonContent));
-    res.setHeader('content-type', 'text/javascript');
-    res.send(contents);
-})
+
+/*
+* Pricing array, base_url and post for the charge of a card to Square.
+* Hit the router's endpoint to process a payment.
+*/
+var product_cost = {"001": 1, "002": 2, "003": 5} 
+var base_url = "https://connect.squareup.com/v2";
+router.post('/charges/charge_card', function(req,res,next){
+  var location;
+  var request_params = req.body;
+  unirest.get(base_url + '/locations')
+  .headers({
+    'Authorization': 'Bearer ' + config.squareAccessToken,
+    'Accept': 'application/json'
+  })
+  .end(function (response) {
+    location = response.body.locations[0];
+    
+    var token = require('crypto').randomBytes(64).toString('hex');
+    
+    //Check if product exists
+    if (!product_cost.hasOwnProperty(request_params.product_id)) {
+      return res.json({status: 400, errors: [{"detail": "Product Unavailable"}] })
+    }
+
+    //Make sure amount is a valid integer
+    var amount = product_cost[request_params.product_id]
+    
+    request_body = {
+      card_nonce: request_params.nonce,
+      amount_money: {
+        amount: amount,
+        currency: 'USD'
+      },
+      idempotency_key: token
+    }
+    unirest.post(base_url + '/locations/' + location.id + "/transactions")
+    .headers({
+    'Authorization': 'Bearer ' + config.squareAccessToken,
+    'Accept': 'application/json',
+    'Content-Type': 'application/json'
+    })
+    .send(request_body)
+    .end(function(response){
+      if (response.body.errors){
+        res.json({status: 400, errors: response.body.errors})
+      }else{
+        res.json({status: 200})
+      }
+    })
+
+  });
+});
+
+
 /*
  * 1. Get code from Firebase.
  * 2. Get test cases from Firebase.
@@ -177,40 +206,7 @@ var actuallyRunTheTests = function() {
     });
     return ('python/testresults.log');
 };
-/**
- * OAuth authentication routes. (Sign in)
- */
-app.get('/auth/facebook', passport.authenticate('facebook', {
-    scope: ['email', 'user_location']
-}));
-app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-    failureRedirect: '/login'
-}), (req, res) => {
-    res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/github', passport.authenticate('github'));
-app.get('/auth/github/callback', passport.authenticate('github', {
-    failureRedirect: '/login'
-}), (req, res) => {
-    res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/google', passport.authenticate('google', {
-    scope: 'profile email'
-}));
-app.get('/auth/google/callback', passport.authenticate('google', {
-    failureRedirect: '/login'
-}), (req, res) => {
-    res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/twitter', passport.authenticate('twitter'));
-app.get('/auth/twitter/callback', passport.authenticate('twitter', {
-    failureRedirect: '/login'
-}), (req, res) => {
-    res.redirect(req.session.returnTo || '/');
-});
-app.get('/auth/linkedin', passport.authenticate('linkedin', {
-    state: 'SOME STATE'
-}));
+
 /**
  * Error Handler.
  */
