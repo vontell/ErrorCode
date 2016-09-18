@@ -1272,3 +1272,19 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 /*# sourceMappingURL=style.css.map */
+
+.outline {
+    height: 410px;
+    border: 2px solid;
+    border-color: black;
+}
+
+.profile_height {
+    height: 410px;
+}
+
+
+
+.font_size {
+    font-size: 40px;
+}
