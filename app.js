@@ -135,17 +135,23 @@ var testRun = function() {
     var code;
     var test;
     var bucket = gcs.bucket('errorcode-c57a3.appspot.com');
-    bucket.getFiles(function(errs, files) {
+    bucket.getFiles({
+        prefix: 'code/'
+    }, function(err, files) {
+        console.log(err, files)
         files.forEach(function(file) {
+            console.log(file.name),
             file.download({
-                destination: '/python/code/file.name'
+                destination: 'python/code/file.name'
             }, function(err) {});
         });
     });
-    bucket.getFiles(function(errs, files) {
+    bucket.getFiles({
+        prefix: 'tests/'
+    }, function(errs, files) {
         files.forEach(function(file) {
             file.download({
-                destination: '/python/test/file.name'
+                destination: 'python/test/file.name'
             }, function(err) {});
         });
     });
@@ -154,10 +160,10 @@ var testRun = function() {
      * located in the subfolder "python" and pass it the file of the code,
      * and the test cases.
      */
-    var codeNames = fs.readdirSync("/python/code");
-    var testNames = fs.readdirSync("/python/test");
-    for (i = 0; i < codeNames.length(); i++) {
-        for (i = 0; i < testNames.length(); i++) {
+    var codeNames = fs.readdirSync("python/code");
+    var testNames = fs.readdirSync("python/test");
+    for (i = 0; i < codeNames.length; i++) {
+        for (i = 0; i < testNames.length; i++) {
             child = exec('python python/testGenerator.py {{codeNames[i], test}}', function(error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
@@ -167,7 +173,7 @@ var testRun = function() {
             });
         };
     };
-    child = exec('/python/generated.py', function(error, stdout, stderr) {
+    child = exec('python/generated.py', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
