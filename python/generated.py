@@ -6,11 +6,11 @@ def function():
     return 6
 class UserTestCase0(unittest.TestCase):
     def runTest(self):
-        self.def function():
+    def function():
 
 class UserTestCase1(unittest.TestCase):
     def runTest(self):
-        self.    return 6
+        return 6
 def suite():
     test_suite = unittest.TestSuite()
     test_suite.addTest(unittest.makeSuite(UserTestCase0))
