@@ -1,0 +1,1 @@
+assertEquals(function(), 6)

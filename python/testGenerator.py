@@ -9,12 +9,12 @@ parser.add_argument('TEST_FILE', type=str,
 args = parser.parse_args()
 # print args.FUNCTION_FILE + " " + args.TEST_FILE
 
-generatedFile = open('generated.py', 'w')
+generatedFile = open('python/generated.py', 'w')
 generatedFile.write("import unittest\n")
 generatedFile.write("import logging\n")
-generatedFile.write("logger = logging.getLogger('myapp')\n")
+generatedFile.write("my_logger = logging.getLogger('myapp')\n")
 generatedFile.write(
-    "logging.basicConfig(filename='testresults.log',level=logging.DEBUG)\n")
+    "logging.basicConfig(filename='python/testresults.log',level=logging.INFO)\n")
 functionFile = open(args.FUNCTION_FILE, 'r')
 testFile = open(args.TEST_FILE, 'r')
 generatedFile.write(functionFile.read())
@@ -39,5 +39,5 @@ generatedFile.write("    return test_suite\n\n")
 
 generatedFile.write("mySuite = suite()\n")
 generatedFile.write("runner = unittest.TextTestRunner()\n")
-generatedFile.write("myapp(runner.run(mySuite))\n")
+generatedFile.write("my_logger.log(logging.INFO,runner.run(mySuite))\n")
 generatedFile.close()

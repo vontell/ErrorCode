@@ -18,11 +18,9 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const chalk = require('chalk');
 const errorHandler = require('errorhandler');
-const lusca = require('lusca');
 const dotenv = require('dotenv');
 const flash = require('express-flash');
 const path = require('path');
-const mongoose = require('mongoose');
 const passport = require('passport');
 const expressValidator = require('express-validator');
 const sass = require('node-sass-middleware');
@@ -107,8 +105,13 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
-    res.send(testRun());
-});
+    var JSONPath = testRun();
+    var contents = fs.readFileSync(JSONPath);
+    // var jsonContent = JSON.parse(contents);
+    // res.send(JSON.strinify(jsonContent));
+    res.setHeader('content-type', 'text/javascript');
+    res.send(contents);
+})
 /*
  * 1. Get code from Firebase.
  * 2. Get test cases from Firebase.
@@ -120,24 +123,29 @@ var testRun = function() {
     bucket.getFiles({
         prefix: "code/"
     }, function(err, files) {
-        console.log(err, files)
+        //console.log(err, files)
+        //console.log(err, files)
         files.forEach(function(file) {
-            console.log(file.name),
+            //console.log(file.name),
             file.download({
-                destination: 'python/code/file.name'
+                destination: 'python/code/python.py'
             }, function(err) {});
         });
     });
     bucket.getFiles({
         prefix: 'tests/'
-    }, function(errs, files) {
+    }, function(err, files) {
+        //console.log(err, files)
         files.forEach(function(file) {
+            //console.log(file);
+            // return;
             file.download({
-                destination: 'python/test/file.name'
-            }, function(err) {});
+                destination: 'python/test/test.py'
+            }, function(err) {
+                console.log(err);
+            });
         });
     });
-    
     return (actuallyRunTheTests());
 };
 var actuallyRunTheTests = function() {
@@ -150,7 +158,8 @@ var actuallyRunTheTests = function() {
     var testNames = fs.readdirSync("python/test");
     for (i = 0; i < codeNames.length; i++) {
         for (j = 0; j < testNames.length; j++) {
-            child = exec('python python/testGenerator.py {{codeNames[i], test[j]}}', function(error, stdout, stderr) {
+            console.log(testNames[j]);
+            child = exec('python python/testGenerator.py ' + 'python/code/' + codeNames[i] + ' ' + 'python/test/' + testNames[j], function(error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
                 if (error !== null) {
@@ -159,14 +168,14 @@ var actuallyRunTheTests = function() {
             });
         };
     };
-    child = exec('python/generated.py', function(error, stdout, stderr) {
+    child = exec('python python/generated.py', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
             console.log('exec error: ' + error);
         }
     });
-    return (testresults.log);
+    return ('python/testresults.log');
 };
 /**
  * OAuth authentication routes. (Sign in)
