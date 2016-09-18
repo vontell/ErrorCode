@@ -2,7 +2,7 @@
   <form ng-cloak>
     <md-toolbar>
       <div class="md-toolbar-tools">
-        <h2>Add Test Case</h2>
+        <h2 class="dialog-title">Add Test Case</h2>
         <span flex></span>
         <md-button class="md-icon-button" ng-click="cancel()">
         </md-button>
@@ -12,19 +12,27 @@
     <md-dialog-content>
       <div class="md-dialog-content">
           
+        <md-input-container class="md-block">
+            <label>Name / Short Description</label>
+            <input ng-model="test.name">
+        </md-input-container>
+          
+        <form action="/upload" enctype="multipart/form-data" method="post" ng-hide="true">
+            <input id="uploadCodeButton" type="file" file-model="myFile" ng-bind="myFile"/>
+        </form>
+          
+          <p><a ng-click="submitCode()" class="btn btn-primary btn-outline with-arrow test-run-button">Run Test Case <i class="icon-arrow-right"></i></a></p>
+          
       </div>
     </md-dialog-content>
 
     <md-dialog-actions layout="row">
-      <md-button href="http://en.wikipedia.org/wiki/Mango" target="_blank" md-autofocus>
-        More on Wikipedia
-      </md-button>
       <span flex></span>
-      <md-button ng-click="answer('not useful')">
-       Not Useful
+      <md-button ng-click="close()">
+       Cancel
       </md-button>
-      <md-button ng-click="answer('useful')">
-        Useful
+      <md-button ng-click="submit()">
+        Submit
       </md-button>
     </md-dialog-actions>
   </form>

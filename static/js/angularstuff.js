@@ -29,6 +29,7 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     
     // END EXAMPLE CODE
     $scope.code = exampleString;
+    $scope.author = "Ben Bitdittle"
     $scope.title = "Merge Sort Implementation"
     
     $scope.uploadCode = function() {
@@ -78,5 +79,40 @@ project.controller('testController', function($rootScope, $scope, $http, $window
 project.controller('addTestController', function($rootScope, $scope, $http, $window, $mdDialog) {
     
     console.log("Controller added")
+    
+    $scope.runTest = function() {
+        
+        var storageRef = firebase.storage().ref();
+        var ref = storageRef.child('tests/' + $scope.myFile.name);
+        
+        var file = $scope.myFile;
+        ref.put(file).then(function(snapshot) {
+            
+            console.log('Uploaded a blob or file!');
+            /*$http.get("/run").then(function(res) {
+                //console.log(res);
+            }, function(err) {
+                console.log(err)
+            })*/
+            
+            var fr = new FileReader();
+            var contents = fr.readAsText(file);
+            console.log(contents);
+            
+        });
+        
+    };
+    
+    $scope.close = function() {
+        
+        $mdDialog.cancel();
+        
+    };
+    
+    $scope.submit = function() {
+        
+        $mdDialog.cancel();
+        
+    };
     
 });
