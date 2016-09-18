@@ -1,12 +1,11 @@
 var project = angular.module('myTestApp', ['ngMaterial']);
 
-project.controller('testController', function($rootScope, $scope, $http, $window) {
+project.controller('testController', function($rootScope, $scope, $http, $window, $mdDialog) {
     
     // EXAMPLE CODE
     
-    //var exampleString = "# Merge Sort Python Solution\r\n# By: Mark Miyashita\r\n\r\ndef merge_sort(lst):\r\n    \"\"\"Sorts the input list using the merge sort algorithm.\r\n\r\n    >>> lst = [4, 5, 1, 6, 3]\r\n    >>> merge_sort(lst)\r\n    [1, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if len(lst) <= 1:\r\n        return lst\r\n    mid = len(lst) \/\/ 2\r\n    left = merge_sort(lst[:mid])\r\n    right = merge_sort(lst[mid:])\r\n    return merge(left, right)\r\n\r\ndef merge(left, right):\r\n    \"\"\"Takes two sorted lists and returns a single sorted list by comparing the\r\n    elements one at a time.\r\n\r\n    >>> left = [1, 5, 6]\r\n    >>> right = [2, 3, 4]\r\n    >>> merge(left, right)\r\n    [1, 2, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if not left:\r\n        return right\r\n    if not right:\r\n        return left\r\n    if left[0] < right[0]:\r\n        return [left[0]] + merge(left[1:], right)\r\n    return [right[0]] + merge(left, right[1:])"
-    
     var exampleString = undefined;
+    var exampleString = "# Merge Sort Python Solution\r\n# By: Mark Miyashita\r\n\r\ndef merge_sort(lst):\r\n    \"\"\"Sorts the input list using the merge sort algorithm.\r\n\r\n    >>> lst = [4, 5, 1, 6, 3]\r\n    >>> merge_sort(lst)\r\n    [1, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if len(lst) <= 1:\r\n        return lst\r\n    mid = len(lst) \/\/ 2\r\n    left = merge_sort(lst[:mid])\r\n    right = merge_sort(lst[mid:])\r\n    return merge(left, right)\r\n\r\ndef merge(left, right):\r\n    \"\"\"Takes two sorted lists and returns a single sorted list by comparing the\r\n    elements one at a time.\r\n\r\n    >>> left = [1, 5, 6]\r\n    >>> right = [2, 3, 4]\r\n    >>> merge(left, right)\r\n    [1, 2, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if not left:\r\n        return right\r\n    if not right:\r\n        return left\r\n    if left[0] < right[0]:\r\n        return [left[0]] + merge(left[1:], right)\r\n    return [right[0]] + merge(left, right[1:])"
     
     $scope.testCases = [];
     
@@ -60,6 +59,24 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             
         });
         
-    }
+    };
+    
+    $scope.openTestDialog = function() {
+        
+        $mdDialog.show({
+            controller: 'addTestController',
+            templateUrl: 'testDialog.html',
+            parent: angular.element(document.body),
+            clickOutsideToClose: true,
+            fullscreen: false //useFullScreen
+        });
+        
+    };
+    
+});
+
+project.controller('addTestController', function($rootScope, $scope, $http, $window, $mdDialog) {
+    
+    console.log("Controller added")
     
 });
