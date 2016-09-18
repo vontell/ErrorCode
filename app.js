@@ -119,13 +119,16 @@ app.post('/account/profile', passportConfig.isAuthenticated, userController.post
 app.post('/account/password', passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.get('/run', function(req, res) {
+    res.send(testRun());
+});
 /*
-* 1. Get code from Firebase.
-* 2. Get test cases from Firebase.
-* 3. Execute the Python test script with the code and the test cases. Return
-* the result.
-*/
-var onTestUpload = function() {
+ * 1. Get code from Firebase.
+ * 2. Get test cases from Firebase.
+ * 3. Execute the Python test script with the code and the test cases. Return
+ * the result.
+ */
+var testRun = function() {
     var code;
     var test;
     var storage = firebase.storage();
@@ -140,12 +143,13 @@ var onTestUpload = function() {
     }).catch(function(error) {
         console.log(error);
     });
-
     /*
      * Child accesses the command line. Execute a python script
      * located in the subfolder "python" and pass it the file of the code,
      * and the test cases.
      */
+
+     ///THIS NEEDS TO CAT TO A LOG FILE AND RETURN THE VALUE
     child = exec('python python/testGenerator.py {{code, test}}', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
