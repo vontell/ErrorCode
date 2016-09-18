@@ -105,10 +105,12 @@ app.post('/account/password', passportConfig.isAuthenticated, userController.pos
 app.post('/account/delete', passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get('/account/unlink/:provider', passportConfig.isAuthenticated, userController.getOauthUnlink);
 app.get('/run', function(req, res) {
-    res.send(testRun());
-});
-app.get('/reallyRun', function(req, res) {
-    res.send(actuallyRunTheTests());
+    var JSONPath = testRun();
+    var contents = fs.readFileSync(JSONPath);
+    // var jsonContent = JSON.parse(contents);
+    // res.send(JSON.strinify(jsonContent));
+    res.setHeader('content-type', 'text/javascript');
+    res.send(contents);
 })
 /*
  * 1. Get code from Firebase.
@@ -121,24 +123,24 @@ var testRun = function() {
     bucket.getFiles({
         prefix: "code/"
     }, function(err, files) {
-      //console.log(err, files)
+        //console.log(err, files)
         //console.log(err, files)
         files.forEach(function(file) {
             //console.log(file.name),
             file.download({
-                destination: 'python/code/file.name'
+                destination: 'python/code/python.py'
             }, function(err) {});
         });
     });
     bucket.getFiles({
         prefix: 'tests/'
     }, function(err, files) {
-      //console.log(err, files)
+        //console.log(err, files)
         files.forEach(function(file) {
             //console.log(file);
             // return;
             file.download({
-                destination: 'python/test/file.name'
+                destination: 'python/test/test.py'
             }, function(err) {
                 console.log(err);
             });
@@ -173,7 +175,7 @@ var actuallyRunTheTests = function() {
             console.log('exec error: ' + error);
         }
     });
-    return (testresults.log);
+    return ('python/testresults.log');
 };
 /**
  * OAuth authentication routes. (Sign in)
