@@ -1,4 +1,5 @@
 import argparse
+import codecs
 
 parser = argparse.ArgumentParser(description='Get test as well as test cases.')
 parser.add_argument('FUNCTION_FILE', type=str,
@@ -9,7 +10,7 @@ parser.add_argument('TEST_FILE', type=str,
 args = parser.parse_args()
 # print args.FUNCTION_FILE + " " + args.TEST_FILE
 
-generatedFile = open('python/generated.py', 'w')
+generatedFile = codecs.open('python/generated.py', 'w', 'utf-8')
 generatedFile.write("import unittest\n")
 generatedFile.write("import logging\n")
 generatedFile.write("my_logger = logging.getLogger('myapp')\n")
@@ -25,8 +26,10 @@ for line in testFile:
     generatedFile.write("class UserTestCase" +
                         str(counter) + "(unittest.TestCase):\n")
     generatedFile.write("    def runTest(self):\n")
-    if(!line.isspace()):
-        generatedFile.write("    " + "    self." + line + "\n")
+    if(not line.isspace()):
+        generatedFile.write("    " + line + "\n")  # "    self."
+        # if("def" in line):
+        #     generatedFile.write("    " + "\n")
     counter += 1
 
 testFile.close()
