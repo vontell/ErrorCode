@@ -1,10 +1,12 @@
-var project = angular.module('myTestApp', []);
+var project = angular.module('myTestApp', ['ngMaterial']);
 
-project.controller('testController', function($rootScope, $scope, $http, $window, fileUpload) {
+project.controller('testController', function($rootScope, $scope, $http, $window) {
     
     // EXAMPLE CODE
     
     //var exampleString = "# Merge Sort Python Solution\r\n# By: Mark Miyashita\r\n\r\ndef merge_sort(lst):\r\n    \"\"\"Sorts the input list using the merge sort algorithm.\r\n\r\n    >>> lst = [4, 5, 1, 6, 3]\r\n    >>> merge_sort(lst)\r\n    [1, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if len(lst) <= 1:\r\n        return lst\r\n    mid = len(lst) \/\/ 2\r\n    left = merge_sort(lst[:mid])\r\n    right = merge_sort(lst[mid:])\r\n    return merge(left, right)\r\n\r\ndef merge(left, right):\r\n    \"\"\"Takes two sorted lists and returns a single sorted list by comparing the\r\n    elements one at a time.\r\n\r\n    >>> left = [1, 5, 6]\r\n    >>> right = [2, 3, 4]\r\n    >>> merge(left, right)\r\n    [1, 2, 3, 4, 5, 6]\r\n    \"\"\"\r\n    if not left:\r\n        return right\r\n    if not right:\r\n        return left\r\n    if left[0] < right[0]:\r\n        return [left[0]] + merge(left[1:], right)\r\n    return [right[0]] + merge(left, right[1:])"
+    
+    var exampleString = undefined;
     
     $scope.testCases = [];
     
@@ -27,17 +29,17 @@ project.controller('testController', function($rootScope, $scope, $http, $window
     $scope.testCases = $scope.testCases.concat(testCase2);
     
     // END EXAMPLE CODE
-    $scope.code = null;
+    $scope.code = exampleString;
     $scope.title = "Merge Sort Implementation"
     
-    $scope.uploadCodeFile = function() {
+    $scope.uploadCode = function() {
         
-        $('#uploadCodeButton').trigger('click');
-        console.log("Clicked");
+        $("#uploadCodeButton").trigger('click');
+        console.log("clicked");
         
     };
     
-    $scope.uploadCode = function() {
+    $scope.submitCode = function() {
         
         var storageRef = firebase.storage().ref();
         var ref = storageRef.child('code/' + $scope.myFile.name);
@@ -58,37 +60,6 @@ project.controller('testController', function($rootScope, $scope, $http, $window
             
         });
         
-    };
+    }
     
 });
-
-project.directive('fileModel', ['$parse', function ($parse) {
-    return {
-        restrict: 'A',
-        link: function(scope, element, attrs) {
-            var model = $parse(attrs.fileModel);
-            var modelSetter = model.assign;
-            
-            element.bind('change', function(){
-                scope.$apply(function(){
-                    modelSetter(scope, element[0].files[0]);
-                });
-            });
-        }
-    };
-}]);
-
-project.service('fileUpload', ['$http', function ($http) {
-    this.uploadFileToUrl = function(file, uploadUrl){
-        var fd = new FormData();
-        fd.append('file', file);
-        $http.post(uploadUrl, fd, {
-            transformRequest: angular.identity,
-            headers: {'Content-Type': undefined}
-        })
-        .success(function(){
-        })
-        .error(function(){
-        });
-    }
-}]);
