@@ -121,10 +121,10 @@ var testRun = function() {
     bucket.getFiles({
         prefix: "code/"
     }, function(err, files) {
-      console.log(err, files)
-        console.log(err, files)
+      //console.log(err, files)
+        //console.log(err, files)
         files.forEach(function(file) {
-            console.log(file.name),
+            //console.log(file.name),
             file.download({
                 destination: 'python/code/file.name'
             }, function(err) {});
@@ -135,7 +135,7 @@ var testRun = function() {
     }, function(err, files) {
       //console.log(err, files)
         files.forEach(function(file) {
-            console.log(file);
+            //console.log(file);
             // return;
             file.download({
                 destination: 'python/test/file.name'
@@ -157,7 +157,7 @@ var actuallyRunTheTests = function() {
     for (i = 0; i < codeNames.length; i++) {
         for (j = 0; j < testNames.length; j++) {
             console.log(testNames[j]);
-            child = exec('python python/testGenerator.py ' + codeNames[i] + ' ' + testNames[j], function(error, stdout, stderr) {
+            child = exec('python python/testGenerator.py ' + 'python/code/' + codeNames[i] + ' ' + 'python/test/' + testNames[j], function(error, stdout, stderr) {
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
                 if (error !== null) {
@@ -166,7 +166,7 @@ var actuallyRunTheTests = function() {
             });
         };
     };
-    child = exec('python/generated.py', function(error, stdout, stderr) {
+    child = exec('python python/generated.py', function(error, stdout, stderr) {
         console.log('stdout: ' + stdout);
         console.log('stderr: ' + stderr);
         if (error !== null) {
