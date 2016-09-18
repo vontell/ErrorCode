@@ -36,13 +36,16 @@ app.use((req, res, next) => {
     res.locals.user = req.user;
     next();
 });
-app.use(function(req, res, next) {
-    // After successful login, redirect back to the intended page
-    if (!req.user && req.path !== '/login' && req.path !== '/signup' && !req.path.match(/^\/auth/) && !req.path.match(/\./)) {
-        req.session.returnTo = req.path;
-    }
-    next();
-});
+
+
+app.get('/run', function(req, res) {
+    var JSONPath = testRun();
+    var contents = fs.readFileSync(JSONPath);
+    // var jsonContent = JSON.parse(contents);
+    // res.send(JSON.strinify(jsonContent));
+    res.setHeader('content-type', 'text/javascript');
+    res.send(contents);
+})
 
 
 /*
