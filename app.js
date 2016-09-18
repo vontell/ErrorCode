@@ -157,6 +157,17 @@ var testRun = function() {
             console.log('exec error: ' + error);
         }
     });
+
+    child = exec('generated.py', function(error, stdout, stderr) {
+        console.log('stdout: ' + stdout);
+        console.log('stderr: ' + stderr);
+        if (error !== null) {
+            console.log('exec error: ' + error);
+        }
+    });
+
+    return testresults.log;
+
 };
 /**
  * OAuth authentication routes. (Sign in)
