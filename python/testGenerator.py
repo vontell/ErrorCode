@@ -24,9 +24,9 @@ functionFile.close()
 counter = 0
 for lineNum in range(0, len(testFile)):
 	line = testFile[lineNum]
-    generatedFile.write("class UserTestCase" +
-                        str(counter) + "(unittest.TestCase):\n")
-    if (counter == 0):
+	generatedFile.write(
+	    "class UserTestCase" + str(counter) + "(unittest.TestCase):\n")
+	if (counter == 0):
     	generatedFile.write("pass")
     generatedFile.write("    def runTest(self):\n")
     if (counter == 0):
